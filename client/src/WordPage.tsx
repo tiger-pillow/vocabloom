@@ -1,5 +1,5 @@
 import React, { KeyboardEventHandler, useCallback } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const verbs = [
     "pleuvoir", 
@@ -28,13 +28,21 @@ export default function WordComponent() {
     const [correctWord, setCorrectWord] = useState<string>("courage")
     const [word, setWord] = useState<Array<String>>([])
 
-    const handleKeyboard: KeyboardEventHandler<HTMLDivElement> = useCallback((eventName: KeyboardEvent) => {
-        console.log(eventName.key)
-    }, [])
+    useEffect(() => {
+        const handleKeyDown = (event:any) => {
+            console.log('Key down:', event.key);
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
 
 
     return (
-        <div className="m-10 flex" onKeyDown={handleKeyboard}>
+        <div className="m-10 flex">
             {
             correctWord.split("").map((letter, index) => {
                 return (
