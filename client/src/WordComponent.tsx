@@ -10,13 +10,29 @@ interface KeyboardEvent {
 export default function WordComponent() {
     const [correctWord, setCorrectWord] = useState<string>("courage")
     const [word, setWord] = useState<Array<String>>([])
+    const [input, setInput] = useState<string>("")
+
+    const handleKeyDown = useCallback((event: KeyboardEvent) => {
+        if (event.key === "Backspace") {
+            setWord(word.slice(0, -1))
+            return
+        }
+        if (event.key === "Enter") {
+            checkCorrectness()
+            return
+        }
+        // const newWord = [...word, event.key] // this commented snippet is not correct and I don't know why either
+        // console.log("new word is ", newWord) 
+        // setWord(newWord)
+        setWord((prevWord) => [...prevWord, event.key]) // this works 
+    }, [word]);
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, []);
+    }, [handleKeyDown]);
 
     useEffect(() => {
         console.log("word is ", word)
@@ -30,29 +46,14 @@ export default function WordComponent() {
         return 
     }
 
-     const handleKeyDown = (event: KeyboardEvent) => {
-        console.log('Key down:', event.key)
-        
-        if (event.key === "Backspace") {
-            setWord(word.slice(0, -1))
-            return
-        }
-        if (event.key === "Enter") {
-            checkCorrectness()
-            return 
-        }
-        // const newWord = [...word, event.key] // this commented snippet is not correct and I don't know why either
-        // console.log("new word is ", newWord) 
-        // setWord(newWord)
-        setWord((prevWord) => [...prevWord, event.key]) // this works 
-    };
-
     return (
         <div>
             <div>courage</div>
             <br></br>
             <div>STATE IS {word}</div>
             <br></br>
+            <div className="text-4xl m-5 text-blue-500">Input is {input}</div>
+            <input className= "border-4 m-5" onChange={(e)=>setInput(e.target.value)}></input>
             <div className="m-10 flex">
                 {
                     correctWord.split("").map((letter, index) => {
@@ -66,3 +67,7 @@ export default function WordComponent() {
         </div>
     )
 }
+
+
+// Solved my issue! 
+// https://stackoverflow.com/questions/66213641/react-keypress-event-taking-only-initial-state-values-and-not-updated-values
