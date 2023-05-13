@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import HomePage from './HomePage';
-import WordComponent from './WordPage';
+import WordComponent from './WordComponent';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
