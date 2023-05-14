@@ -50,7 +50,6 @@ export default function WordComponent({correctWord}: {correctWord: string}) {
 
     return (
         <div>
-            <div>courage</div>
             <br></br>
             <div>STATE IS {word}</div>
             <br></br>
