@@ -2,15 +2,15 @@ import { stringify } from "json5";
 import React, { KeyboardEventHandler, useCallback } from "react";
 import { useState, useEffect } from "react";
 import { check } from "yargs";
+import { WordContext } from "./WordPage";
 
 interface KeyboardEvent {
     key: string
 }
 
-export default function WordComponent() {
-    const [correctWord, setCorrectWord] = useState<string>("courage")
+export default function WordComponent({correctWord}: {correctWord: string}) {
     const [word, setWord] = useState<Array<String>>([])
-    const [input, setInput] = useState<string>("")
+    const {currStatus, setCurrStatus} = React.useContext(WordContext)
 
     const handleKeyDown = useCallback((event: KeyboardEvent) => {
         if (event.key === "Backspace") {
@@ -43,6 +43,8 @@ export default function WordComponent() {
         if (word.join("") === correctWord) {
             console.log("CORRECT!")
         }
+        setWord([])
+        setCurrStatus("success")
         return 
     }
 
@@ -52,8 +54,7 @@ export default function WordComponent() {
             <br></br>
             <div>STATE IS {word}</div>
             <br></br>
-            <div className="text-4xl m-5 text-blue-500">Input is {input}</div>
-            <input className= "border-4 m-5" onChange={(e)=>setInput(e.target.value)}></input>
+
             <div className="m-10 flex">
                 {
                     correctWord.split("").map((letter, index) => {

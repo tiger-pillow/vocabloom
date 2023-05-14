@@ -3,14 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import HomePage from './HomePage';
-import WordComponent from './WordComponent';
-
+import WordPage from './WordPage';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <WordComponent />
+    <WordPage />
   </React.StrictMode>
 );
 

@@ -1,6 +1,7 @@
 import { stringify } from "json5";
-import React, { KeyboardEventHandler, useCallback } from "react";
+import React, {  createContext } from "react";
 import { useState, useEffect } from "react";
+import WordComponent from "./WordComponent";
 
 const verbs = [
     "pleuvoir", 
@@ -16,58 +17,41 @@ const nouns = [
     "la pénurie", 
     "le rendement", 
     "le procédé", 
-
 ]
-
 const adjectives = [
     "délétère", 
     "raide", 
-
 ]
 
-interface KeyboardEvent{
-    key: string
+type WordContextType = {
+    currStatus: string,
+    setCurrStatus: (status: string) => void
 }
-
-export default function WordComponent() {
-    const [correctWord, setCorrectWord] = useState<string>("courage")
-    const [word, setWord] = useState<Array<String>>([])
-    const typedLetters: Array<String> = []
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, []);
+const WordContextDefault = {
+    currStatus: "", 
+    setCurrStatus: (status: string) => {}
+};
+export const WordContext = createContext<WordContextType>(WordContextDefault)
 
 
+export default function WordPage(){
+    const [correctWord, setCorrectWord] = useState<string>("haha")
+    const [currStatus, setCurrStatus] = useState<string>("going") // going, success, fail
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-        console.log('Key down:', event.key);
-        if (event.key === "Backspace") {
-            setWord((prevArray)=>prevArray.slice(0, -1))
-            return 
+    useEffect(()=>{
+        if (currStatus === "success") {
+            setCorrectWord("courage")
         }
-        setWord((prevArray)=>[...prevArray, event.key])
-        console.log(stringify(word))
-    };
- 
-   
+    }, [currStatus])
 
     return (
-        <div className="m-10 flex">
-            <div>courage</div>
-            {
-                correctWord.split("").map((letter, index) => {
-                    return (
-                    <div>
-                        <div className="border-2 border-blue-800 w-10 h-10 m-1 text-center">{word[index]}</div>
-                    </div>)
-                })
-            }
+        <div className="m-5">
+            <WordContext.Provider value={{currStatus, setCurrStatus}}>
+                <div>Current Status {currStatus}</div>
+                <WordComponent correctWord={correctWord}/>
+            </WordContext.Provider>
         </div>
-        
     )
+
 
 }
