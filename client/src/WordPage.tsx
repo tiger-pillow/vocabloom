@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { NounCard, Card } from "./Interface";
 import NounComponent from "./NounComponent";
 import { ProgressBar } from "./ProgressBar";
+import Title from "./Title";
 
 const verbs = [
     "pleuvoir", 
@@ -106,6 +107,7 @@ export default function WordPage(){
 
     return (
         <div className="m-5 justify-center">
+            <Title />
             <WordContext.Provider value={{currStatus, cardIndex, totalCardCount, setCurrStatus}}>
                 <div className="w-2/3 m-auto">
                     <ProgressBar />

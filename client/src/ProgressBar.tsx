@@ -7,6 +7,7 @@ export const ProgressBar = () => {
 
     return(
         <div className="flex m-2 border-2">
+            <div className="m-px">{cardIndex}/{totalCardCount}</div>
             {
                 [...Array(totalCardCount)].map((_, index) => {
                     return (
