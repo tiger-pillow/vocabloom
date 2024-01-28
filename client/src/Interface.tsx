@@ -1,36 +1,24 @@
 
-export interface Card {
+export interface ICard {
     type: string
 }
 
-export interface NounCard extends Card {
+export interface INounCard extends ICard {
     type: string,
+    word: string,
     definition: string,
     definitionFr?: string, 
-    noun: string,
     gender: string,
     sentence: Array<string>,
     fillIndex: Array<number>, 
     fillWordLength ?: Array<number>
 }
 
-export interface Verb{
-    type: string, 
-    verb: string, 
-    definition: string,
-}
 
-export interface VerbCard extends Card {
+export interface IVerbCard extends ICard {
     type: string,
-    verb: string,
-    temp: string, // "present", "imparfait", "futur", "conditionel", "subjunctif", "passe compose"
+    word: string,
     definition: string,
-    definitionFr?: string,
-    participePasse: string,
-    firstPerson: string | undefined | null,
-    secondPerson: string | undefined | null,
-    thirdPerson: string | undefined | null,
-    firstPersonPlural: string | undefined | null,
-    secondPersonPlural: string | undefined | null,
-    thirdPersonPlural: string | undefined | null,
+    tense: string, 
+    conjugation: Array<string>
 }

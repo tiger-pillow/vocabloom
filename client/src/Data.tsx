@@ -1,9 +1,9 @@
-import { NounCard, Card, VerbCard } from "./Interface";
+import { INounCard, ICard, IVerbCard } from "./Interface";
 
-export const nouns: NounCard[] = [
+export const nouns: INounCard[] = [
     {
         type: "noun",
-        noun: "la réticence",
+        word: "la réticence",
         definition: "reluctance",
         definitionFr: "la hésitation",
         gender: "la",
@@ -12,7 +12,7 @@ export const nouns: NounCard[] = [
     },
     {
         type: "noun",
-        noun: "la pénurie",
+        word: "la pénurie",
         definition: "shortage",
         definitionFr: "la manque",
         gender: "la",
@@ -21,7 +21,7 @@ export const nouns: NounCard[] = [
     },
     {
         type: "noun",
-        noun: "le rendement",
+        word: "le rendement",
         definition: "yield",
         definitionFr: "la productivité",
         gender: "le",
@@ -30,7 +30,7 @@ export const nouns: NounCard[] = [
     },
     {
         type: "noun",
-        noun: "l'averse",
+        word: "l'averse",
         definition: "hail, shower",
         definitionFr: "la pluie soudaine et brève",
         gender: "la",
@@ -39,66 +39,39 @@ export const nouns: NounCard[] = [
     }
 ]
 
-export const verbs: VerbCard[] = [
+
+
+export const verbs: IVerbCard[] = [
     {
         type: "verb",
-        verb: "pleuvoir",
+        word: "aimer",
+        definition: "to like, to love",
+        tense: "present",
+        conjugation: ["aime", "aimes", "aime", "aimons", "aimez", "aiment"],
+    }, 
+    {
+        type: "verb",
+        word: "s'assoir",
+        definition: "to sit down",
+        tense: "present",
+        conjugation: ["m'assieds", "t'assieds", "s'assied", "nous asseyons", "vous asseyez", "s'asseyent"],
+    },
+    {
+        type: "verb",
+        word: "pleuvoir",
         definition: "to rain",
-        definitionFr: "tomber de l'eau du ciel",
-        temp: "present",
-        participePasse: "plu", 
-        firstPerson: "NA",
-        secondPerson: "NA",
-        thirdPerson: "pleut",
-        firstPersonPlural: "NA",
-        secondPersonPlural: "NA",
-        thirdPersonPlural: "pleuvent", 
+        tense: "present",
+        conjugation: ["", "", "pleut", "", "", "pluvent"],
     }, 
     {
         type: "verb",
-        verb: "pleurer",
-        definition: "to cry",
-        definitionFr: "verser les armes",
-        temp: "present",
-        participePasse: "plu", 
-        firstPerson: "pleure",
-        secondPerson: "pleures",
-        thirdPerson: "pleure",
-        firstPersonPlural: "pleurons",
-        secondPersonPlural: "pleurez",
-        thirdPersonPlural: "pleurent"
-    }, 
-    {
-        type: "verb",
-        verb: "pleurer",
-        definition: "to cry",
-        definitionFr: "verser les armes",
-        temp: "imparfait",
-        participePasse: "plu",
-        firstPerson: "pleurais",
-        secondPerson: "pleurais",
-        thirdPerson: "pleurait",
-        firstPersonPlural: "pleurions",
-        secondPersonPlural: "pleuriez",
-        thirdPersonPlural: "pleuraient"
-    }, 
-    {
-        type: "verb",
-        verb: "pleurer",
-        definition: "to cry",
-        definitionFr: "verser les armes",
-        temp: "futur",
-        participePasse: "plu",
-        firstPerson: "pleurerai",
-        secondPerson: "pleureras",
-        thirdPerson: "pleurera",
-        firstPersonPlural: "pleurerons",
-        secondPersonPlural: "pleurerez",
-        thirdPersonPlural: "pleureront"
-    }
-
+        word: "aimer",
+        definition: "to like, to love",
+        tense: "subjonctif",
+        conjugation: ["aime", "aimes", "aime", "aimions", "aimiez", "aiment"],
+    },
+    
 ]
-
 
 export const verbPair = [
     {

@@ -1,15 +1,15 @@
 import React, { useCallback } from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext} from "react";
 import { WordContext } from "./WordPage";
-import { NounCard } from "./Interface";
+import { INounCard } from "./Interface";
 
 interface KeyboardEvent {
     key: string
 }
 
-export default function NounComponent({nounCard}: {nounCard: NounCard}) {
+export default function NounComponent({nounCard}: {nounCard: INounCard}) {
     const [userInput, setUserInput] = useState<string>()
-    const {currStatus, setCurrStatus} = React.useContext(WordContext)
+    const {currStatus, setCurrStatus} = useContext(WordContext)
 
     const handleKeyDown = useCallback((event: KeyboardEvent) => {
         if (event.key === "Enter") {
@@ -28,7 +28,7 @@ export default function NounComponent({nounCard}: {nounCard: NounCard}) {
 
   
     const checkCorrectness = () => {
-        if (userInput === nounCard.noun) {
+        if (userInput === nounCard.word) {
             setUserInput("")
             setCurrStatus("success")
         } else {
