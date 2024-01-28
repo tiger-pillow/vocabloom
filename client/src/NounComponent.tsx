@@ -8,26 +8,16 @@ interface KeyboardEvent {
 }
 
 export default function NounComponent({nounCard}: {nounCard: NounCard}) {
-    const [userTyped, setUserTyped] = useState<Array<String>>([])
+    const [userInput, setUserInput] = useState<string>()
     const {currStatus, setCurrStatus} = React.useContext(WordContext)
 
     const handleKeyDown = useCallback((event: KeyboardEvent) => {
-        if (event.key === "Meta" || event.key === "Shift") {
-            return 
-        }
-        if (event.key === "Backspace") {
-            setUserTyped(userTyped.slice(0, -1))
-            return
-        }
         if (event.key === "Enter") {
             checkCorrectness()
             return
         }
-        // const newWord = [...word, event.key] // this commented snippet is not correct and I don't know why either
-        // console.log("new word is ", newWord) 
-        // setWord(newWord)
-        setUserTyped((prevWord) => [...prevWord, event.key]) // this works 
-    }, [userTyped]);
+
+    }, [userInput]);
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
@@ -36,48 +26,34 @@ export default function NounComponent({nounCard}: {nounCard: NounCard}) {
         };
     }, [handleKeyDown]);
 
-    useEffect(() => {
-        console.log("word is ", userTyped)
-    }, [userTyped]);
-
+  
     const checkCorrectness = () => {
-        console.log("checking correctness" , userTyped)
-        if (userTyped.join("") === nounCard.sentence[nounCard.fillIndex[0]]) {
-            console.log("CORRECT!")
+        if (userInput === nounCard.noun) {
+            setUserInput("")
+            setCurrStatus("success")
+        } else {
+            alert("Incorrect, try again!")
         }
-        setUserTyped([])
-        setCurrStatus("success")
+        
         return 
-    }
-
-    const FillBlank = ({ word }: { word: string }) => {
-        console.log("split word is ", word.split(""))
-        return (
-            <div className="flex flex-wrap">
-                {
-                    word.split("").map((letter, index) => {
-                        return (
-                            <div key={index} className="border-2 border-slate-400 w-6 m-px text-center text-2xl">{userTyped[index]}</div>
-                        )
-                    })
-                }
-            </div>
-        )
     }
 
     return (
         <div >
-            <DefinitionCard definition={nounCard.definition}></DefinitionCard>
+            <p>debug user input is {userInput}</p>
+            <div className="m-2 p-2 border-2 border-yellow-300 bg-yellow-200 rounded-md">
+                <div className="text-lg">definition (noun) <span className="text-2xl">{nounCard.definition}</span></div>
+            </div>
             <div className="m-2 flex flex-wrap border-2 border-stone-200 bg-stone-100 p-2 rounded-md"> 
             {
                 nounCard.sentence.map((word, indexSent) => {
-                    if (nounCard.fillIndex.includes(indexSent)) {
+                    if (nounCard.fillIndex.includes(indexSent)) { // the worst logic possible, not very elegant 
                         return (
-                            <FillBlank word={word}></FillBlank>
+                            <input type="text" value = {userInput} className="bg-gray-300 border-b-8 border-gray-300 focus:border-blue-500" onChange={e => setUserInput(e.target.value)}/>
                         )
                     } else {
                         return (
-                            <div key={indexSent} className="text-xl text-black m-1">{ word }</div>
+                            <div key={indexSent} className="text-xl text-black ">{word}&nbsp;</div>
                         )
                     }
                     
@@ -88,13 +64,6 @@ export default function NounComponent({nounCard}: {nounCard: NounCard}) {
     )
 }
 
-const DefinitionCard = ({definition}: {definition: string}) => {
-    return (
-        <div className="m-2 p-2 border-2 border-yellow-300 bg-yellow-200 rounded-md">
-            <div className="text-lg">definition (noun) <span className="text-2xl">{definition}</span></div>
-        </div>
-    )
-}
 
 
 // Solved my issue! 
