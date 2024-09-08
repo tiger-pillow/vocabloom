@@ -1,10 +1,10 @@
 import React, { KeyboardEvent, useState, useContext } from "react";
 import { WordContext } from "./WordPage";
-import { IVerbCard } from "./Interface";
+import { IVerbCard, IConjugateCard} from "./Interface";
 
 
 
-export default function VerbComponent ({verbCard}: {verbCard: IVerbCard}){
+export function ConjugateComponent({ conjugateCard }: { conjugateCard: IConjugateCard}){
     const [userInput, setUserInput] = useState<string[]>(["", "", "", "", "", ""])
     const {currStatus, setCurrStatus } = useContext(WordContext)
     const input1Ref = React.useRef<HTMLInputElement>(null)
@@ -37,7 +37,7 @@ export default function VerbComponent ({verbCard}: {verbCard: IVerbCard}){
     }
     const checkCorrectness = () => {
         for (let i = 0; i < 6; i++) {
-            if (userInput[i] !== verbCard.conjugation[i]) {
+            if (userInput[i] !== conjugateCard.conjugation[i]) {
                 console.log("incorrect")
                 setCurrStatus("fail")
                 return 
@@ -54,9 +54,8 @@ export default function VerbComponent ({verbCard}: {verbCard: IVerbCard}){
     const INPUT_CLASSNAME = "ml-2 m-1 bg-gray-50 border-b-2 border-black focus:bg-gray-100"
     return (
         <div >
-            <p> {userInput}</p>
             <div className="m-2 p-2 border-2 border-yellow-300 bg-yellow-200 rounded-md">
-                <div className="text-lg">definition (noun) <span className="text-2xl">{verbCard.definition}</span></div>
+                <div className="text-lg">definition: <span className="text-2xl">{conjugateCard.definition}</span></div>
             </div>
             <div className="m-2 p-2 border-2" >
                 <div>
@@ -66,7 +65,7 @@ export default function VerbComponent ({verbCard}: {verbCard: IVerbCard}){
                     Tu <input value = {userInput[1]} ref={input2Ref} onKeyDown={(e) => handleKeyDown(e, input3Ref, 1)} onChange={(e) => handleChange(e.target.value, 1)} className={INPUT_CLASSNAME}></input>
                 </div>
                 <div>
-                    Il/Elle <input value={userInput[2]} ref={input3Ref} onKeyDown={(e) => handleKeyDown(e, input4Ref, 2)} onChange={(e) => handleChange(e.target.value, 2)} className={INPUT_CLASSNAME}></input>
+                    Il/Elle/On <input value={userInput[2]} ref={input3Ref} onKeyDown={(e) => handleKeyDown(e, input4Ref, 2)} onChange={(e) => handleChange(e.target.value, 2)} className={INPUT_CLASSNAME}></input>
                 </div>
                 <div>
                     Nous <input value={userInput[3]} ref={input4Ref} onKeyDown={(e) => handleKeyDown(e, input5Ref, 3)} onChange={(e) => handleChange(e.target.value, 3)} className={INPUT_CLASSNAME}></input>
@@ -80,4 +79,17 @@ export default function VerbComponent ({verbCard}: {verbCard: IVerbCard}){
             </div>
         </div>
     )
+}
+
+
+export function VerbComponent({verbCard}: {verbCard: IVerbCard}){
+    return (
+        <div>
+            <h1>{verbCard.word}</h1>
+            <h1>{verbCard.definition}</h1>
+            
+        </div>
+    )
+
+
 }

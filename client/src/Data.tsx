@@ -1,4 +1,4 @@
-import { INounCard, ICard, IVerbCard } from "./Interface";
+import { INounCard, ICard, IConjugateCard, IVerbCard } from "./Interface";
 
 export const nouns: INounCard[] = [
     {
@@ -39,9 +39,53 @@ export const nouns: INounCard[] = [
     }
 ]
 
-
-
 export const verbs: IVerbCard[] = [
+    {
+        type: "verb",
+        word: "fléchir",
+        definition: "to bend",
+        sentence:[
+            ["Après des heures de négociations, il", 0],
+            ["a", 1], 
+            ["finalement", 0],
+            ["fléchi", 1], 
+            ["sous la pression et a accepté les conditions du contrat.", 0]
+        ]
+    }, 
+    {
+        type: "verb",
+        word: "fléchir",
+        definition: "to bend",
+        sentence: [
+            ["Les branches de l'arbre commencent à", 0],
+            ["fléchir", 1],
+            ["sous le poids de la neige.", 0]
+        ]
+    },
+    {
+        type: "verb",
+        word: "bondir",
+        definition: "to jump",
+        sentence: [
+            ["En entendant le bruit soudain, le chat", 0],
+            ["a bondi", 1],
+            ["hors de sa cachette.", 0]
+        ]
+    }, 
+    {
+        type: "verb",
+        word: "bondir",
+        definition: "to jump",
+        sentence: [
+            ["À la fin du match, les supporters", 0],
+            ["ont bondi", 1],
+            ["de joie pour célébrer la victoire de leur équipe.", 0]
+        ]
+
+    }
+]
+
+export const conjugates: IConjugateCard[] = [
     {
         type: "verb",
         word: "aimer",
@@ -71,7 +115,7 @@ export const verbs: IVerbCard[] = [
         conjugation: ["aime", "aimes", "aime", "aimions", "aimiez", "aiment"],
     },
     
-]
+] 
 
 export const verbPair = [
     {
