@@ -1,11 +1,10 @@
-import React, {  createContext } from "react";
+import React, {  createContext, useRef } from "react";
 import { useState, useEffect } from "react";
 import {ICard, IVerbCard, IConjugateCard} from "./Interface";
-import NounComponent from "./NounComponent";
-import { VerbComponent, ConjugateComponent } from "./VerbComponent";
+import {CardComponent} from "./CardComponents";
 import { ProgressBar } from "./ProgressBar";
 import Title from "./NavBar";
-import { nouns, conjugates, verbs} from "./Data";
+import { mixedData, conjugates, verbs} from "./Data";
 import axios from "axios";
 
 
@@ -25,16 +24,15 @@ export const WordContext = createContext<WordContextType>(WordContextDefault)
 
 
 export default function WordPage(){
-    const [cards, setCards] = useState<ICard[]>(conjugates)
+    const [cards, setCards] = useState<ICard[]>(mixedData)
     const [cardIndex, setCardIndex] = useState<number>(0)
     const [currCard, setCurrCard] = useState<ICard>(cards[0] as ICard)
     const [currStatus, setCurrStatus] = useState<string>("going") // going, success, fail, finished
-    
-    console.log("\n\n_________Initialization", conjugates.length)
+    let borderColor = useRef<string>("border-gray-500")
+
     // TODO: fetch data from backend
     // FIXME: start from here next time
     // useEffect( () => {
-        
     //     try {
     //         const response = await axios.get<string[]>('https://localhost:8000');
     //         console.log(response.data);
@@ -50,6 +48,7 @@ export default function WordPage(){
                 return 
             }
             const newCardIndex = cardIndex + 1
+            borderColor.current =  currStatus === "success" ? "border-green-500" : "border-red-500"
             console.log("useEffect updated once", newCardIndex)
             setCardIndex(newCardIndex)
             setCurrCard(cards[newCardIndex] as IConjugateCard)
@@ -68,12 +67,16 @@ export default function WordPage(){
                     :
                         <div className="w-2/3 m-auto">
                         <ProgressBar />
-                        <ConjugateComponent conjugateCard={currCard as IConjugateCard} />
+                        {/* <ConjugateComponent conjugateCard={currCard as IConjugateCard} /> */}
+                        <div>debug {borderColor.current}</div>
+                        <div className={`border-4 ${borderColor.current}`}>
+                            <CardComponent card={currCard} />
+                        </div>
+
                     </div>
                 }
 
             </WordContext.Provider>
-            <VerbComponent verbCard={verbs[0]} />
 
         </div>
     )

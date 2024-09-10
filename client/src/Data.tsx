@@ -87,28 +87,28 @@ export const verbs: IVerbCard[] = [
 
 export const conjugates: IConjugateCard[] = [
     {
-        type: "verb",
+        type: "conjugate",
         word: "aimer",
         definition: "to like, to love",
         tense: "present",
         conjugation: ["aime", "aimes", "aime", "aimons", "aimez", "aiment"],
     }, 
     {
-        type: "verb",
+        type: "conjugate",
         word: "s'assoir",
         definition: "to sit down",
         tense: "present",
         conjugation: ["m'assieds", "t'assieds", "s'assied", "nous asseyons", "vous asseyez", "s'asseyent"],
     },
     {
-        type: "verb",
+        type: "conjugate",
         word: "pleuvoir",
         definition: "to rain",
         tense: "present",
         conjugation: ["", "", "pleut", "", "", "pluvent"],
     }, 
     {
-        type: "verb",
+        type: "conjugate",
         word: "aimer",
         definition: "to like, to love",
         tense: "subjonctif",
@@ -116,6 +116,12 @@ export const conjugates: IConjugateCard[] = [
     },
     
 ] 
+
+export const mixedData: ICard[] = []
+mixedData.push(verbs[0])
+mixedData.push(conjugates[0])
+mixedData.push(verbs[1])
+mixedData.push(conjugates[1])
 
 export const verbPair = [
     {
@@ -145,7 +151,6 @@ export const verbPair = [
         fillIndex: [1, 2]
     }
 ]
-
 
 
 export const adjectives = [
