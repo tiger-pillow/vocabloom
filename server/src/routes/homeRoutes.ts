@@ -1,14 +1,15 @@
-const VerbCard = require('../schemas/verbCardSchema.ts');
-const NounCard = require('../schemas/nounCardSchema.ts');
-const ConjugateCard = require('../schemas/conjugateCardSchema.ts');
+import mongoose from "mongoose";
+import NounCard from "./nouncardSchema";
+import VerbCard from "./verbcardSchema";
+import ConjugateCard from "./conjugateCardSchema";
 
-async function getAllCards(cardType) {
+export default async function getAllCards(cardType: string) {
     var data;
     try {
         // Fetch all documents from the VerbCards collection
         if (cardType == "verb") {
             data = await VerbCard.find();
-            
+
         } else if (cardType == "noun") {
             data = await NounCard.find();
         } else if (cardType == "conjugate") {
@@ -20,5 +21,3 @@ async function getAllCards(cardType) {
         throw new Error('Could not fetch verb cards');
     }
 };
-
-module.exports =  ({getAllCards}); // Export the function for use in the route handler

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 // Define the Flashcard schema
 const VerbCardSchema = new mongoose.Schema({
@@ -32,4 +32,4 @@ const VerbCardSchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model("VerbCard", VerbCardSchema);
+export default mongoose.model("VerbCard", VerbCardSchema);

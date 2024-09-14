@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 // Define the Flashcard schema
 const NounCardSchema = new mongoose.Schema({
@@ -20,6 +20,7 @@ const NounCardSchema = new mongoose.Schema({
         type: String,
         required: true, trim:true,// The definition is required
     },
+    
     examples: {
         type:
             [
@@ -31,5 +32,5 @@ const NounCardSchema = new mongoose.Schema({
     },
 });
 
+export default mongoose.model("NounCard", NounCardSchema);
 
-module.exports = mongoose.model("NounCard", NounCardSchema);

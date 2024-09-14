@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", // Use the latest ECMAScript version
+    "module": "ESNext", // Use ES Modules
+    "rootDir": "./src", // Specify the root directory of input files
+    "moduleResolution": "node", // Use Node module resolution
+    "esModuleInterop": true, // Enable interoperability between CommonJS and ES Modules
+    "skipLibCheck": true, // Skip type checking of all declaration files
+    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased imports
+    "strict": true, // Enable all strict type-checking options
+    "outDir": "./dist", // Redirect output structure to the directory
+    "sourceMap": true // Generates corresponding .map file
+  },
+  "include": [
+    "src/**/*.ts"
+, "src/index.ts"  ], // Include all TypeScript files under src
+  "exclude": [
+    "node_modules"
+  ] // Exclude node_modules from compilation
+}

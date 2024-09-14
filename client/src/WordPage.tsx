@@ -6,7 +6,7 @@ import { ProgressBar } from "./ProgressBar";
 import Title from "./NavBar";
 import { mixedData, conjugates, verbs} from "./Data";
 import axios from "axios";
-
+import axiosConfig from "./axiosConfig";
 
 type WordContextType = {
     currStatus: string,
@@ -24,25 +24,29 @@ export const WordContext = createContext<WordContextType>(WordContextDefault)
 
 
 export default function WordPage(){
-    const [cards, setCards] = useState<ICard[]>(mixedData)
+    const [cards, setCards] = useState<ICard[]>()
     const [cardIndex, setCardIndex] = useState<number>(0)
-    const [currCard, setCurrCard] = useState<ICard>(cards[0] as ICard)
+    const [currCard, setCurrCard] = useState<ICard>()
     const [currStatus, setCurrStatus] = useState<string>("going") // going, success, fail, finished
     let borderColor = useRef<string>("border-gray-500")
 
-    // TODO: fetch data from backend
-    // FIXME: start from here next time
-    // useEffect( () => {
-    //     try {
-    //         const response = await axios.get<string[]>('https://localhost:8000');
-    //         console.log(response.data);
-    //     } catch (err) {
-    //         console.error(err);
-    //     }
-    // }, [])
+  
+    useEffect(() => {
+        const fetchData = async() => {
+            try {
+                console.log("fetching data")
+                const response = await axiosConfig.get("/vocablist");
+                console.log(response.data);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        fetchData();
+
+    }, [])
 
     useEffect(()=>{
-        if (currStatus === "success") { 
+        if (currStatus === "success" && cards) { 
             if (cardIndex === cards.length - 1) {
                 setCurrStatus("finished")
                 return 
@@ -60,24 +64,27 @@ export default function WordPage(){
     return (
         <div className="m-5 justify-center">
             <Title />
-            <WordContext.Provider value={{ currStatus, cardIndex, totalCardCount: cards.length, setCurrStatus}}>
-                {
-                    currStatus === "finished" ?
-                        <div className="text-4xl text-center">You have finished all the words!</div> 
-                    :
-                        <div className="w-2/3 m-auto">
-                        <ProgressBar />
-                        {/* <ConjugateComponent conjugateCard={currCard as IConjugateCard} /> */}
-                        <div>debug {borderColor.current}</div>
-                        <div className={`border-4 ${borderColor.current}`}>
-                            <CardComponent card={currCard} />
-                        </div>
+            {
+                cards && currCard && <WordContext.Provider value={{ currStatus, cardIndex, totalCardCount: cards.length, setCurrStatus }}>
+                    {
+                        currStatus === "finished" ?
+                            <div className="text-4xl text-center">You have finished all the words!</div>
+                            :
+                            <div className="w-2/3 m-auto">
+                                <ProgressBar />
+                                {/* <ConjugateComponent conjugateCard={currCard as IConjugateCard} /> */}
+                                <div>debug {borderColor.current}</div>
+                                <div className={`border-4 ${borderColor.current}`}>
+                                    <CardComponent card={currCard} />
+                                </div>
 
-                    </div>
-                }
+                            </div>
+                    }
 
-            </WordContext.Provider>
+                </WordContext.Provider>
 
+            }
+            
         </div>
     )
 

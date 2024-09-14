@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
 
 // Define the Flashcard schema
 const conjugateCardSchema = new mongoose.Schema({
@@ -31,4 +32,4 @@ const conjugateCardSchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model("ConjugateCard", conjugateCardSchema);
+export default mongoose.model("ConjugateCard", conjugateCardSchema);
