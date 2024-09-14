@@ -3,6 +3,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import {homeRouter} from './routes/homeRoutes.ts';
+
 dotenv.config();
 
 
@@ -32,10 +34,7 @@ app.use(cors({
 }));
 
 
-app.get("/vocablist", async (req, res) => {
-    console.log('GET /vocablist');
-    res.json({ message: "Hello from server!" });
-});
+app.use("/", homeRouter);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

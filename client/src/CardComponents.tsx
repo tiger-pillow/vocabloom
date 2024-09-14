@@ -98,7 +98,7 @@ export function ConjugateComponent({ conjugateCard }: { conjugateCard: IConjugat
 
 
 export function VerbComponent({verbCard}: {verbCard: IVerbCard}){
-    const answers = verbCard.sentence.filter((group) => group[1] === 1).map((group) => group[0])
+    const answers = verbCard.examples[0].filter((group) => group[1] === "1").map((group) => group[0])
     const [inputs, setInputs] = useState<string[]>([...Array(answers.length)].map(() => ""))
     const inputRefs = useRef<(HTMLInputElement | null)[]>([])
     const { currStatus, setCurrStatus } = useContext(WordContext)
@@ -149,8 +149,8 @@ export function VerbComponent({verbCard}: {verbCard: IVerbCard}){
             </div>
             <div>
                 {
-                    verbCard.sentence.map((group, index) => {
-                        if (group[1] === 0) {
+                    verbCard.examples[0].map((group, index) => {
+                        if (group[1] === "0") {
                             return <span>{group[0]}</span>
                         } else {
                             const currentInputIndex = inputIndex

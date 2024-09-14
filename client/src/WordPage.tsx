@@ -4,7 +4,7 @@ import {ICard, IVerbCard, IConjugateCard} from "./Interface";
 import {CardComponent} from "./CardComponents";
 import { ProgressBar } from "./ProgressBar";
 import Title from "./NavBar";
-import { mixedData, conjugates, verbs} from "./Data";
+import { mixedData, conjugates, verbs} from "../Data";
 import axios from "axios";
 import axiosConfig from "./axiosConfig";
 

@@ -26,5 +26,5 @@ export interface IConjugateCard extends ICard {
 export interface IVerbCard extends ICard{
     word: string,
     definition: string,
-    sentence: Array<[string, number]>,
+    examples: Array<Array<[string, string]>>,
 }

@@ -1,4 +1,4 @@
-import { INounCard, ICard, IConjugateCard, IVerbCard } from "./Interface";
+import { INounCard, ICard, IConjugateCard, IVerbCard } from "./src/Interface";
 
 export const nouns: INounCard[] = [
     {

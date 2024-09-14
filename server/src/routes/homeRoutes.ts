@@ -1,23 +1,11 @@
-import mongoose from "mongoose";
-import NounCard from "./nouncardSchema";
-import VerbCard from "./verbcardSchema";
-import ConjugateCard from "./conjugateCardSchema";
+import { Router } from 'express';
+import  getAllCards from '../controllers/cardControllers';
 
-export default async function getAllCards(cardType: string) {
-    var data;
-    try {
-        // Fetch all documents from the VerbCards collection
-        if (cardType == "verb") {
-            data = await VerbCard.find();
+const router = Router();
+router.get("/vocablist", async (req, res) => {
+    const data = await getAllCards("noun");
+    console.log("/vocablist", data);
+    res.send(data);
+});
 
-        } else if (cardType == "noun") {
-            data = await NounCard.find();
-        } else if (cardType == "conjugate") {
-            data = await ConjugateCard.find();
-        }
-        return data; // Return the retrieved documents
-    } catch (error) {
-        console.error('Error retrieving VerbCards:', error);
-        throw new Error('Could not fetch verb cards');
-    }
-};
+export { router as homeRouter };
