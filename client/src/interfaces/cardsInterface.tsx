@@ -8,10 +8,7 @@ export interface INounCard extends ICard {
     word: string,
     definition: string,
     definitionFr?: string, 
-    gender: string,
-    sentence: Array<string>,
-    fillIndex: Array<number>, 
-    fillWordLength ?: Array<number>
+    examples: Array<[string, string]>,
 }
 
 
@@ -19,12 +16,12 @@ export interface IConjugateCard extends ICard {
     word: string,
     definition: string,
     tense: string, 
-    conjugation: Array<string>
+    conjugations: Array<string>
 }
 
 
 export interface IVerbCard extends ICard{
     word: string,
     definition: string,
-    examples: Array<Array<[string, string]>>,
+    examples: Array<[string, string]>,
 }

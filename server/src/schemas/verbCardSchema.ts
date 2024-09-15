@@ -22,10 +22,8 @@ const VerbCardSchema = new mongoose.Schema({
   },
   examples: { 
     type: 
-    [ 
-        [ // one sentence
-        [{ type: String, required: true, }, { type: Number, required: true, enum: [0, 1], },], // one word
-      ],
+    [ // one sentence
+      [{ type: String, required: true, }, { type: Number, required: true, enum: [0, 1], },], // one word
     ],
     required: true, 
   },

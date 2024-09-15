@@ -3,7 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import {homeRouter} from './routes/homeRoutes.ts';
+import homeRouter from './routes/homeRoutes.js';
 
 dotenv.config();
 

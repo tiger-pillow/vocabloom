@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import { WordContext } from "./WordPage";
+import { WordContext } from "../pages/CardPage";
 
 
 export const ProgressBar = () => {

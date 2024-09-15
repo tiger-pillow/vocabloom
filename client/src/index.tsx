@@ -2,14 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import HomePage from './HomePage';
-import WordPage from './WordPage';
+import CardPage from '../src/pages/CardPage';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <WordPage />
+    <CardPage />
   </React.StrictMode>
 );
 

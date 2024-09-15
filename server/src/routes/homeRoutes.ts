@@ -1,11 +1,10 @@
 import { Router } from 'express';
-import  getAllCards from '../controllers/cardControllers';
+import {getCardsByType, getAllCards} from '../controllers/cardControllers.js';
 
-const router = Router();
-router.get("/vocablist", async (req, res) => {
-    const data = await getAllCards("noun");
-    console.log("/vocablist", data);
-    res.send(data);
+const homeRouter = Router();
+homeRouter.get("/vocablist", async (req, res) => {
+    const data = await getAllCards();
+    res.send(JSON.stringify(data));
 });
 
-export { router as homeRouter };
+export default homeRouter;

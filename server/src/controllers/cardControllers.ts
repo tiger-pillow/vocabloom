@@ -1,15 +1,14 @@
 import mongoose from "mongoose";
-import NounCard from "./nouncardSchema";
-import VerbCard from "./verbcardSchema";
-import ConjugateCard from "./conjugateCardSchema";
+import NounCard from "../schemas/nouncardSchema.js";
+import VerbCard from "../schemas/verbcardSchema.js";
+import ConjugateCard from "../schemas/conjugateCardSchema.js";
 
-export default async function getAllCards(cardType: string) {
+export async function getCardsByType(cardType: string) {
     var data;
     try {
         // Fetch all documents from the VerbCards collection
         if (cardType == "verb") {
             data = await VerbCard.find();
-
         } else if (cardType == "noun") {
             data = await NounCard.find();
         } else if (cardType == "conjugate") {
@@ -21,3 +20,16 @@ export default async function getAllCards(cardType: string) {
         throw new Error('Could not fetch verb cards');
     }
 };
+
+export async function getAllCards(){
+    try {
+        const verbData = await VerbCard.find();
+        const nounData = await NounCard.find();
+        const conjugateData = await ConjugateCard.find();
+        const combined = [...nounData, ...verbData, ...conjugateData];
+        return combined;
+    } catch (error) {
+        console.error('Error retrieving cards:', error);
+        throw new Error('Could not fetch cards');
+    }
+}

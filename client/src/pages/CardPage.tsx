@@ -1,12 +1,10 @@
 import React, {  createContext, useRef } from "react";
 import { useState, useEffect } from "react";
-import {ICard, IVerbCard, IConjugateCard} from "./Interface";
-import {CardComponent} from "./CardComponents";
-import { ProgressBar } from "./ProgressBar";
-import Title from "./NavBar";
-import { mixedData, conjugates, verbs} from "../Data";
-import axios from "axios";
-import axiosConfig from "./axiosConfig";
+import {ICard, IVerbCard, IConjugateCard} from "../interfaces/cardsInterface";
+import {CardComponent} from "../components/cards/CardComponents";
+import { ProgressBar } from "../components/ProgressBar";
+import Title from "../components/NavBar";
+import axiosConfig from "../axiosConfig";
 
 type WordContextType = {
     currStatus: string,
@@ -23,20 +21,19 @@ const WordContextDefault = {
 export const WordContext = createContext<WordContextType>(WordContextDefault)
 
 
-export default function WordPage(){
+export default function CardPage(){
     const [cards, setCards] = useState<ICard[]>()
     const [cardIndex, setCardIndex] = useState<number>(0)
     const [currCard, setCurrCard] = useState<ICard>()
     const [currStatus, setCurrStatus] = useState<string>("going") // going, success, fail, finished
-    let borderColor = useRef<string>("border-gray-500")
-
   
     useEffect(() => {
         const fetchData = async() => {
             try {
-                console.log("fetching data")
                 const response = await axiosConfig.get("/vocablist");
-                console.log(response.data);
+                setCards(response.data)
+                setCurrCard(response.data[0] as ICard)
+                console.log("card page loading response.data", response.data)
             } catch (err) {
                 console.error(err);
             }
@@ -47,16 +44,19 @@ export default function WordPage(){
 
     useEffect(()=>{
         if (currStatus === "success" && cards) { 
-            if (cardIndex === cards.length - 1) {
+            // Last card, deck finished 
+            if (cardIndex === cards.length - 1) { 
                 setCurrStatus("finished")
                 return 
             }
+            // Otherwise, move to next card
             const newCardIndex = cardIndex + 1
-            borderColor.current =  currStatus === "success" ? "border-green-500" : "border-red-500"
-            console.log("useEffect updated once", newCardIndex)
-            setCardIndex(newCardIndex)
-            setCurrCard(cards[newCardIndex] as IConjugateCard)
-            setCurrStatus("going")
+            setTimeout(() => {
+                setCardIndex(newCardIndex)
+                setCurrCard(cards[newCardIndex] as ICard)
+                setCurrStatus("going")
+            }, 1000)
+
         }
     }, [currStatus, cardIndex, currCard, cards])
 
@@ -72,9 +72,10 @@ export default function WordPage(){
                             :
                             <div className="w-2/3 m-auto">
                                 <ProgressBar />
-                                {/* <ConjugateComponent conjugateCard={currCard as IConjugateCard} /> */}
-                                <div>debug {borderColor.current}</div>
-                                <div className={`border-4 ${borderColor.current}`}>
+                                
+                                {currStatus === "success" ? <div> ✅ Correct </div> : <div> </div>}
+                                
+                                <div className={`border-2 mt-8 ${currStatus === "going" ? "border-gray-500" : currStatus === "fail" ?  "border-red-500" : "border-green-500"}`}>
                                     <CardComponent card={currCard} />
                                 </div>
 
