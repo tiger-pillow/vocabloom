@@ -1,9 +1,8 @@
-import React, {  createContext, useRef } from "react";
+import { createContext } from "react";
 import { useState, useEffect } from "react";
-import {ICard, IVerbCard, IConjugateCard} from "../interfaces/cardsInterface";
+import {ICard} from "../interfaces/cardsInterface";
 import {CardComponent} from "../components/cards/CardComponents";
 import { ProgressBar } from "../components/ProgressBar";
-import Title from "../components/NavBar";
 import axiosConfig from "../axiosConfig";
 
 type WordContextType = {
@@ -63,7 +62,6 @@ export default function CardPage(){
    
     return (
         <div className="m-5 justify-center">
-            <Title />
             {
                 cards && currCard && <WordContext.Provider value={{ currStatus, cardIndex, totalCardCount: cards.length, setCurrStatus }}>
                     {

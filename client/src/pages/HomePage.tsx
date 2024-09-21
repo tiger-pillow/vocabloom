@@ -1,9 +1,11 @@
-import React from "react";
+import CardPage from "./CardPage";
+import Title from "../components/NavBar";
 
 export default function HomePage() {
     return (
-        <div className="container m-10 text-lg text-blue-800">
-            HomePage
+        <div className="container m-10 text-lg">
+            <Title />
+            <CardPage />
         </div>
     );
 }
