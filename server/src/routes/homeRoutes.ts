@@ -7,7 +7,5 @@ homeRouter.get("/vocablist", async (req, res) => {
     res.send(JSON.stringify(data));
 });
 
-print("homeRouter test not called in function")
-
 
 export default homeRouter;
