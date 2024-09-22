@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch src --exec ts-node --esm src/index.ts",
-    "start": "nodemon --watch 'src/**/*.ts' ts-node --esm src/index.ts"
+    "dev": "nodemon --exec node --loader ts-node/esm src/index.ts",
+    "start": "nodemon --exec node --loader ts-node/esm src/index.ts"
   },
   "keywords": [],
   "author": "",  "license": "ISC",
