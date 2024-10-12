@@ -1,7 +1,9 @@
 
 export interface ICard {
     // cardID: number,
-    type: string
+    type: string,
+    word: string,
+    definition: string,
 }
 
 export interface INounCard extends ICard {
