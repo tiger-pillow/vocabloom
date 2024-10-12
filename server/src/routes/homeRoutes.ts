@@ -8,4 +8,8 @@ homeRouter.get("/vocablist", async (req, res) => {
 });
 
 
+homeRouter.post("/addCard", async (req, res) => {
+    console.log("add card data from front end", req.body)
+})
+
 export default homeRouter;
