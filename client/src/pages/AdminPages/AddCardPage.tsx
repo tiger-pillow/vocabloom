@@ -6,13 +6,22 @@ import axiosConfig from "../../axiosConfig";
 export default function AddCardPage() {
     const [word, setWord] = useState(String)
     const [def, setDef] = useState(String)
+    const [type, setType] = useState(String)
     const [sentence, setSentence] = useState(String)
     const [example, setExample] = useState(Array<[string, string]>)
 
 
-    const save_card = () => {
-        axiosConfig.post("/addCard", {"object": "test save_card"})
-        console.log("save card clicked")
+    const add_card = () => {
+        axiosConfig.post("/addCard", {
+            word: word.trim(), 
+            definition: def.trim(), 
+            type: type.trim(), 
+            example: example,
+        })
+        .then((res) => {
+            console.log("saved the card", res)
+            }
+        )
     }
     
     const modify_blank = (i: number) => {
@@ -27,7 +36,7 @@ export default function AddCardPage() {
 
     useEffect(() => {
         const newExample: Array<[string, string]> = []
-        sentence.split(" ").forEach((word, i) => {
+        sentence.trim().split(/[ ,]+/).forEach((word, i) => {
             newExample.push([word, "0"])
         })
         setExample(newExample)
@@ -46,8 +55,8 @@ export default function AddCardPage() {
                         <input
                             type="radio"
                             name="cardType"
-                            value="Verb Card"
                             className="form-radio h-4 w-4 text-blue-600"
+                            onChange={()=>{setType("verb")}}
                         />
                         <span className="text-gray-700">Verb Card</span>
                     </label>
@@ -55,8 +64,8 @@ export default function AddCardPage() {
                         <input
                             type="radio"
                             name="cardType"
-                            value="Verb Card"
                             className="form-radio h-4 w-4 text-blue-600"
+                            onChange={() => { setType("noun") }}
                         />
                         <span className="text-gray-700">Noun Card</span>
                     </label>
@@ -64,12 +73,12 @@ export default function AddCardPage() {
 
                     <div>Enter the word
                         <input className="bg-gray-50 border-2 h-10 w-full focus:bg-gray-100"
-                            onChange={(e) => setWord(e.target.value)}></input>
+                            onChange={(e) => setWord(e.target.value.trim())}></input>
                     </div>
 
                     <div>Definition
                         <input className="bg-gray-50 border-2 h-10 w-full focus:bg-gray-100 "
-                            onChange={(e) => setWord(e.target.value)}></input>
+                            onChange={(e) => setDef(e.target.value.trim())}></input>
                     </div>
 
                     <div>Sentence
@@ -89,13 +98,14 @@ export default function AddCardPage() {
                     </div>
 
                     <button className="m-4 h-10 w-20 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-                    onClick={save_card}
+                    onClick={add_card}
                     >Save</button>
                 </div>
                 {/* Right column */}
 
                 <div className='col-span-1 border-2 m-2 p-8'>
                     <p> Word: {word} </p>
+                    <p> Type: {type} </p>
                     <p> Definition: {def} </p>
                     <p>{example.map((w, i) => {
                         return(

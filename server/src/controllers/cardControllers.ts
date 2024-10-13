@@ -33,3 +33,27 @@ export async function getAllCards(){
         throw new Error('Could not fetch cards');
     }
 }
+
+export async function addCard(content: {type:string, word: string, definition: string, examples: Array<[string, string]>}){
+    let newCard
+    if (content.type === "verb"){
+        newCard = new VerbCard({
+            type: "verb",
+            word: content.word,
+            definition: content.definition,
+            examples: content.examples
+        })
+
+    }
+    else if (content.type === "noun") {
+        newCard = new NounCard({
+            type: "noun", 
+            word: content.word, 
+            definition: content.definition,
+            examples: content.examples
+        })
+    }
+    await newCard?.save() 
+    console.log ("new Card ", content.word, "saved successfully")
+}       
+    

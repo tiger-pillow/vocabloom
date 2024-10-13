@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {getCardsByType, getAllCards} from '../controllers/cardControllers.js';
+import {getCardsByType, getAllCards, addCard} from '../controllers/cardControllers.js';
 
 const homeRouter = Router();
 homeRouter.get("/vocablist", async (req, res) => {
@@ -9,7 +9,10 @@ homeRouter.get("/vocablist", async (req, res) => {
 
 
 homeRouter.post("/addCard", async (req, res) => {
-    console.log("add card data from front end", req.body)
-})
+    console.log(req.body)
+    addCard(req.body).then((res) => 
+        console.log("saved card, ", res))
+    }
+)
 
 export default homeRouter;
