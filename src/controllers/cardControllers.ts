@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import NounCard from "../schemas/nouncardSchema.js";
-import VerbCard from "../schemas/verbcardSchema.js";
+import NounCard from "../schemas/nounCardSchema.js";
+import VerbCard from "../schemas/verbCardSchema.js";
 import ConjugateCard from "../schemas/conjugateCardSchema.js";
 
 export async function getCardsByType(cardType: string) {

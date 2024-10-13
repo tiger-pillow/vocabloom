@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon --exec node --loader ts-node/esm src/index.ts",
     "build": "tsc", 
-    "start": "node --loader ts-node/esm",
+    "start": "node dist/index.js",
     "client": "cd client && npm start",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },

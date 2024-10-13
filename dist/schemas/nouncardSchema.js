@@ -27,4 +27,4 @@ const NounCardSchema = new mongoose.Schema({
     },
 });
 export default mongoose.model("NounCard", NounCardSchema);
-//# sourceMappingURL=nouncardSchema.js.map
+//# sourceMappingURL=nounCardSchema.js.map

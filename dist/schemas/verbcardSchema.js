@@ -27,4 +27,4 @@ const VerbCardSchema = new mongoose.Schema({
     },
 });
 export default mongoose.model("VerbCard", VerbCardSchema);
-//# sourceMappingURL=verbcardSchema.js.map
+//# sourceMappingURL=verbCardSchema.js.map
