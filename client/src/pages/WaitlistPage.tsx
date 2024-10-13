@@ -2,9 +2,6 @@
 import axiosConfig from "../axiosConfig";
 
 export default function WaitlistPage() {
-
-
-
     return (
         <div className="bg-gray-100 h-screen flex items-center justify-center">
             <div className="text-center max-w-4xl mx-auto">
