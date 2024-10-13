@@ -6,7 +6,7 @@ export default function WaitlistPage() {
         <div className="bg-gray-100 h-screen flex items-center justify-center">
             <div className="text-center max-w-4xl mx-auto">
                 <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold text-gray-800 leading-tight tracking-tight">
-                    VocaBloom
+                    vocabloom
                 </h1>
 
                 <p className="mt-6 text-lg sm:text-xl lg:text-2xl text-gray-500">
