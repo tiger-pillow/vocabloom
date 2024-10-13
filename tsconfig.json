@@ -12,7 +12,7 @@
     "sourceMap": true // Generates corresponding .map file
   },
   "include": [
-    "src/**/*.ts" ], // Include all TypeScript files under src
+    "src/**/*" ], // Include all TypeScript files under src
   "exclude": [
     "node_modules"
   ] // Exclude node_modules from compilation
