@@ -4,7 +4,7 @@ var axiosConfig: AxiosInstance;
 if (process.env.NODE_ENV === "production" ){
     console.log("NODE ENV = PRODUCTION, in AxiosConfig")
     axiosConfig = axios.create({
-        baseURL:'http://localhost:5000',
+        baseURL: process.env.baseURL,
         withCredentials: true,
     });
 } else {
