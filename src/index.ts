@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import homeRouter from './routes/homeRoutes.js'; // have to import with js
 import path from "path";
+import { fileURLToPath } from 'url';
+
 
 dotenv.config();
 
@@ -35,6 +37,13 @@ app.use(cors({
     ],
     credentials: true,
 }));
+
+// Equivalent of __filename
+const __filename = fileURLToPath(import.meta.url);
+
+// Equivalent of __dirname
+const __dirname = path.dirname(__filename);
+
 
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
