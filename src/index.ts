@@ -29,6 +29,17 @@ if (process.env.NODE_ENV == "development" && process.env.DB_URI_VOCABLOOM) {
         });
 }
 
+if (process.env.NODE_ENV == "production" && process.env.DB_URI_VOCABLOOM) {
+    console.log('Production mode: Connecting to MongoDB');
+    mongoose.connect(process.env.DB_URI_VOCABLOOM)
+        .then(() => {
+            console.log('Production mode: Mongo DB Connected!');
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
 app.use(cors({
     origin: [
         "http://192.168.43.169:3000",
