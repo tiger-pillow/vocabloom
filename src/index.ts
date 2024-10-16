@@ -7,16 +7,27 @@ import homeRouter from './routes/homeRoutes.js'; // have to import with js
 import path from "path";
 import { fileURLToPath } from 'url';
 
-
 dotenv.config();
-
-
 const app = express();
 app.use(express.json())
 const router = express.Router();
 const PORT = process.env.PORT || 8000;
 
 console.log('Starting server', process.env.DB_URI_VOCABLOOM);
+
+
+app.use(cors({
+    origin: [
+        "http://192.168.43.169:3000",
+        "http://localhost:3000",
+        "https://vocabloom-7d180737e497.herokuapp.com/",
+        "https://vocabloom.com"
+    ],
+    credentials: true,
+}));
+
+app.use("/", homeRouter);
+
 
 if (process.env.NODE_ENV == "development" && process.env.DB_URI_VOCABLOOM) {
     console.log('Development mode: Connecting to MongoDB');
@@ -40,15 +51,6 @@ if (process.env.NODE_ENV == "production" && process.env.DB_URI_VOCABLOOM) {
         });
 }
 
-app.use(cors({
-    origin: [
-        "http://192.168.43.169:3000",
-        "http://localhost:3000",
-        "https://vocabloom-7d180737e497.herokuapp.com/"
-    ],
-    credentials: true,
-}));
-
 // Equivalent of __filename
 const __filename = fileURLToPath(import.meta.url);
 
@@ -65,7 +67,6 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-app.use("/", homeRouter);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
