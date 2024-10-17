@@ -14,7 +14,10 @@ export async function getCardsByType(cardType: string) {
         } else if (cardType == "conjugate") {
             data = await ConjugateCard.find();
         }
-        return data; // Return the retrieved documents
+        data = data?.filter((card) => {
+            return card.status === "active";
+        })
+        return data
     } catch (error) {
         console.error('Error retrieving VerbCards:', error);
         throw new Error('Could not fetch verb cards');
@@ -34,14 +37,14 @@ export async function getAllCards(){
     }
 }
 
-export async function addCard(content: {type:string, word: string, definition: string, examples: Array<[string, string]>}){
+export async function addCard(content: {type:string, word: string, definition: string, example: Array<[string, string]>}){
     let newCard
     if (content.type === "verb"){
         newCard = new VerbCard({
             type: "verb",
             word: content.word,
             definition: content.definition,
-            examples: content.examples
+            examples: content.example
         })
 
     }
@@ -50,7 +53,7 @@ export async function addCard(content: {type:string, word: string, definition: s
             type: "noun", 
             word: content.word, 
             definition: content.definition,
-            examples: content.examples
+            examples: content.example
         })
     }
     await newCard?.save() 

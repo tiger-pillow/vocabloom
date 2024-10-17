@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 
 // Define the Flashcard schema
@@ -7,6 +7,9 @@ const conjugateCardSchema = new mongoose.Schema({
         type: String,
         required: true,
         // enum: ['verb', 'noun', 'adjective', 'adverb', 'preposition', 'conjunction', 'interjection'], // Restrict to valid word types
+    },
+    status: {
+        type: String,
     },
     word: {
         type: String,

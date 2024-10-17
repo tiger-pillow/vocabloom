@@ -4,7 +4,8 @@ import { addEmail } from '../controllers/userControllers.js';
 
 const homeRouter = Router();
 homeRouter.get("/vocablist", async (req, res) => {
-    const data = await getAllCards();
+    const data = await getCardsByType("noun");
+    
     res.send(JSON.stringify(data));
 });
 

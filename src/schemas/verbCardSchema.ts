@@ -7,6 +7,9 @@ const VerbCardSchema = new mongoose.Schema({
     required: true,
     // enum: ['verb', 'noun', 'adjective', 'adverb', 'preposition', 'conjunction', 'interjection'], // Restrict to valid word types
   },
+  status: {
+    type: String,
+  },
   word: {
     type: String,
     required: true, // The word is required

@@ -7,6 +7,10 @@ const NounCardSchema = new mongoose.Schema({
         required: true,
         // enum: ['verb', 'noun', 'adjective', 'adverb', 'preposition', 'conjunction', 'interjection'], // Restrict to valid word types
     },
+    status: {
+        type: String,
+        // active for usable cards, dormant for non-active
+    }, 
     word: {
         type: String,
         required: true, // The word is required

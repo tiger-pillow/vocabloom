@@ -35,7 +35,7 @@ export default function NounComponent({ nounCard }: { nounCard: INounCard }) {
                 {
                     nounCard.examples.map((group, index) => {
                         if (group[1] === "0") {
-                            return <span>{group[0]}</span>
+                            return <span className="mr-1">{group[0]}</span>
                         } else {
                             const currentInputIndex = inputIndex
                             inputIndex++
@@ -45,7 +45,7 @@ export default function NounComponent({ nounCard }: { nounCard: INounCard }) {
                                 ref={(el) => inputRefs.current[currentInputIndex] = el}
                                 onKeyDown={(e) => { if (e.key === "Enter") { checkCorrectness() } }}
                                 id={String(currentInputIndex)}
-                                className="ml-2 m-1 bg-gray-50 border-b-2 border-black focus:bg-gray-100">
+                                className="mr-1 m-1 bg-gray-50 border-b-2 border-black focus:bg-gray-100">
                             </input>
                         }
                     })
