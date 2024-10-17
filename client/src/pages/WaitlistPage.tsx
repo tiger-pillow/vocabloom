@@ -1,6 +1,7 @@
 
 import axiosConfig from "../axiosConfig";
 import { useState } from "react";
+import logo from "../assets/logo.png";
 
 export default function WaitlistPage() {
     const [email, setEmail] = useState(String)
@@ -28,10 +29,17 @@ export default function WaitlistPage() {
     return (
         <div className="bg-gray-100 h-screen flex items-center justify-center">
             <div className="text-center max-w-4xl mx-auto">
-                <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold text-gray-800 leading-tight tracking-tight">
-                    vocabloom
-                </h1>
 
+                <div className="flex items-baseline justify-center space-x-2">
+                    <img
+                        src={logo}
+                        alt="flower logo"
+                        className="h-8 w-8 sm:h-16 sm:w-16 "
+                    />
+                    <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold text-gray-800 leading-tight tracking-tight">
+                        vocabloom
+                    </h1>
+                </div>
                 <p className="mt-6 text-lg sm:text-xs lg:text-2xl text-gray-500">
                     Tackle foreign language, one word at a time.
                 </p>
