@@ -7,6 +7,10 @@ const NounCardSchema = new mongoose.Schema({
         required: true,
         // enum: ['verb', 'noun', 'adjective', 'adverb', 'preposition', 'conjunction', 'interjection'], // Restrict to valid word types
     },
+    time_added: {
+        type: Date,
+        default: Date.now
+    },
     status: {
         type: String,
         // active for usable cards, dormant for non-active
@@ -32,6 +36,9 @@ const NounCardSchema = new mongoose.Schema({
             ],
         required: true,
     },
+    examplesTranslation: {
+        type: String
+    }
 });
 
 export default mongoose.model("NounCard", NounCardSchema);

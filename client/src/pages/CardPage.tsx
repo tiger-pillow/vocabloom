@@ -2,7 +2,7 @@ import { createContext } from "react";
 import { useState, useEffect } from "react";
 import {ICard} from "../interfaces/cardsInterface";
 import {CardComponent} from "../components/cards/CardComponents";
-import { ProgressBar } from "../components/ProgressBar";
+import { ProgressBar } from "../components/cards/ProgressBar";
 import axiosConfig from "../axiosConfig";
 
 type WordContextType = {
@@ -26,10 +26,11 @@ export default function CardPage(){
     const [currCard, setCurrCard] = useState<ICard>()
     const [currStatus, setCurrStatus] = useState<string>("going") // going, success, fail, finished
   
+
     useEffect(() => {
         const fetchData = async() => {
             try {
-                const response = await axiosConfig.get("/vocablist");
+                const response = await axiosConfig.get("/userCards");
                 setCards(response.data)
                 setCurrCard(response.data[0] as ICard)
                 console.log("card page loading response.data", response.data)

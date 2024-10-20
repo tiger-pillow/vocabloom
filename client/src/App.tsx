@@ -10,10 +10,10 @@ function App() {
       <header className="App-header">
         <Router>
           <Routes>
-            <Route path = "/" element = {<WaitlistPage></WaitlistPage>}></Route>
+            <Route path= "/" element = {<WaitlistPage></WaitlistPage>}></Route>
             <Route path="/cards" element={<HomePage />} />      {/* Home Route */}
             <Route path="/admin" element={<AdminPage />} /> {/* Admin Route */}
-            <Route path = "/addcard" element = {<AddCardPage/>} />
+            <Route path= "/addcard" element = {<AddCardPage/>} />
           </Routes>
         </Router>
       </header>

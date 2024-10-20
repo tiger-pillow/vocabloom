@@ -4,13 +4,16 @@ export interface ICard {
     type: string,
     word: string,
     definition: string,
+    status: string,
+    _id: string, // mongoId
 }
 
 export interface INounCard extends ICard {
     word: string,
     definition: string,
-    definitionFr?: string, 
+    definitionFr?: string,
     examples: Array<[string, string]>,
+    examplesTranslation?: string,
 }
 
 
@@ -26,4 +29,6 @@ export interface IVerbCard extends ICard{
     word: string,
     definition: string,
     examples: Array<[string, string]>,
+    examplesTranslation?: string,
+
 }

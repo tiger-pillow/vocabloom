@@ -6,13 +6,15 @@ export default function NounComponent({ nounCard }: { nounCard: INounCard }) {
     const [userInput, setUserInput] = useState<string>()
     const answer = nounCard.examples.filter((group) => group[1] === "1")[0][0]
     const { currStatus, setCurrStatus } = useContext(WordContext)
+    // const inputRefs = useRef<(HTMLInputElement | null)[]>([])
     const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
 
     const checkCorrectness = () => {
         if (userInput?.toLowerCase() === answer.toLowerCase()) {
-            setUserInput("")
             setCurrStatus("success")
+            console.log("check correctness correct")
+            setUserInput("")
         } else {
             setCurrStatus("fail")
         }
@@ -28,6 +30,7 @@ export default function NounComponent({ nounCard }: { nounCard: INounCard }) {
     let inputIndex = 0;
     return (
         <div >
+            {userInput }
             <div className="m-2 p-2 border-2 border-yellow-300 bg-yellow-200 rounded-md">
                 <div className="text-lg">definition (noun) <span className="text-2xl">{nounCard.definition}</span></div>
             </div>

@@ -7,6 +7,10 @@ const VerbCardSchema = new mongoose.Schema({
     required: true,
     // enum: ['verb', 'noun', 'adjective', 'adverb', 'preposition', 'conjunction', 'interjection'], // Restrict to valid word types
   },
+  time_added: {
+    type: Date,
+    default: Date.now
+  },
   status: {
     type: String,
   },
@@ -30,6 +34,9 @@ const VerbCardSchema = new mongoose.Schema({
     ],
     required: true, 
   },
+  examplesTranslation: {
+    type: String
+  }
 });
 
 

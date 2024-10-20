@@ -3,20 +3,24 @@ import NounCard from "../schemas/nounCardSchema.js";
 import VerbCard from "../schemas/verbCardSchema.js";
 import ConjugateCard from "../schemas/conjugateCardSchema.js";
 
-export async function getCardsByType(cardType: string) {
+export async function getCardsByTypeStatus(cardType: string, status: string = "all") {
     var data;
     try {
         // Fetch all documents from the VerbCards collection
         if (cardType == "verb") {
-            data = await VerbCard.find();
+            data = await VerbCard.find().sort({ time_added: 1 });
         } else if (cardType == "noun") {
-            data = await NounCard.find();
+            data = await NounCard.find().sort({time_added: 1});
         } else if (cardType == "conjugate") {
-            data = await ConjugateCard.find();
+            data = await ConjugateCard.find().sort({ time_added: 1 });
         }
-        data = data?.filter((card) => {
-            return card.status === "active";
-        })
+
+        if (status === "active"){
+            data = data?.filter((card) => {
+                return card.status === "active";
+            })
+        }
+        
         return data
     } catch (error) {
         console.error('Error retrieving VerbCards:', error);
@@ -37,14 +41,16 @@ export async function getAllCards(){
     }
 }
 
-export async function addCard(content: {type:string, word: string, definition: string, example: Array<[string, string]>}){
+export async function addCard(content: {type:string, word: string, definition: string, examples: Array<[string, string]>, examplesTranslation: string}){
     let newCard
     if (content.type === "verb"){
         newCard = new VerbCard({
             type: "verb",
             word: content.word,
             definition: content.definition,
-            examples: content.example
+            examples: content.examples,
+            status: "active",
+            examplesTranslation: content.examplesTranslation,
         })
 
     }
@@ -53,10 +59,18 @@ export async function addCard(content: {type:string, word: string, definition: s
             type: "noun", 
             word: content.word, 
             definition: content.definition,
-            examples: content.example
+            examples: content.examples,
+            status: "active"
         })
     }
-    await newCard?.save() 
-    console.log ("new Card ", content.word, "saved successfully")
+    try{
+        await newCard?.save() 
+        return 200
+    } catch (err){
+        console.log("unable to save card ", err)
+        return 501
+    }
+    
+    
 }       
     
