@@ -8,11 +8,11 @@ export async function getCardsByTypeStatus(cardType: string, status: string = "a
     try {
         // Fetch all documents from the VerbCards collection
         if (cardType == "verb") {
-            data = await VerbCard.find().sort({ time_added: 1 });
+            data = await VerbCard.find().sort({ time_added: -1 });
         } else if (cardType == "noun") {
-            data = await NounCard.find().sort({time_added: 1});
+            data = await NounCard.find().sort({time_added: -1});
         } else if (cardType == "conjugate") {
-            data = await ConjugateCard.find().sort({ time_added: 1 });
+            data = await ConjugateCard.find().sort({ time_added: -1 });
         }
 
         if (status === "active"){
@@ -60,7 +60,8 @@ export async function addCard(content: {type:string, word: string, definition: s
             word: content.word, 
             definition: content.definition,
             examples: content.examples,
-            status: "active"
+            status: "active",
+            examplesTranslation: content.examplesTranslation,
         })
     }
     try{

@@ -56,7 +56,7 @@ export default function VerbComponent({ verbCard }: { verbCard: IVerbCard }) {
                 {
                     verbCard.examples.map((group, index) => {
                         if (group[1] === "0") {
-                            return <span>{group[0]}</span>
+                            return <span className="mr-1">{group[0]}</span>
                         } else {
                             const currentInputIndex = inputIndex
                             inputIndex++

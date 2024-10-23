@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --exec node --loader ts-node/esm src/index.ts",
-    "build": "tsc", 
+    "build": "tsc",
     "start": "node dist/index.js",
     "heroku-postbuild": "rm -r dist && npm run build && npm install --prefix client && npm run build --prefix client"
   },
@@ -18,9 +18,9 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "mongoose": "^8.6.2",
-    "ts-fsrs": "^4.3.1",
-    "typescript": "^5.6.3",
-    "ts-node": "^10.9.2"
+    "ts-fsrs": "^4.4.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

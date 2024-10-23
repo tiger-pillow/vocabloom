@@ -10,12 +10,12 @@ const homeRouter = Router();
 
 
 homeRouter.get("/userCards", async (req, res) => {
-    const data = await getCardsByTypeStatus("noun", "active");
+    const data = await getCardsByTypeStatus("verb", "active");
     res.send(JSON.stringify(data));
 });
 
 homeRouter.post("/adminCards", async (req, res) => {
-    const data = await getCardsByTypeStatus("noun", "all");
+    const data = await getCardsByTypeStatus(req.body.type, "all");
     res.send(JSON.stringify(data))
 });
 

@@ -117,7 +117,7 @@ export default function AddCardPage() {
                     <div>
                         Examples Translation
                         <input className="bg-gray-50 border-2 h-10 w-full focus:bg-gray-100 "
-                            onChange={(e) => setSentence(e.target.value)}></input>
+                            onChange={(e) => setExamplesTrans(e.target.value)}></input>
                     </div>
 
                     <button className="m-4 h-10 w-20 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
@@ -139,6 +139,7 @@ export default function AddCardPage() {
                             <div>{w}</div>
                         )
                     })}</p>
+                    <p> Example translation: {examplesTrans} </p>
                 </div>
             </div>
         </div>

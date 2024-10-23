@@ -15,12 +15,13 @@ return (
 }
 
 function CardsTable(){
+    const [type, setType] = useState("verb")
     const [cards, setCards] = useState<ICard[]>() 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axiosConfig.post("/adminCards", {
-                    "type": "noun"
+                    "type": type
                 });
                 setCards(response.data)
             } catch (err) {
@@ -28,7 +29,7 @@ function CardsTable(){
             }
         }
         fetchData();
-    }, [])
+    }, [type])
 
     const delete_card = async (card: ICard) => {
         const result = await axiosConfig.post("/deleteCard", {
@@ -56,6 +57,8 @@ function CardsTable(){
 
     return (
         <div>
+            <button className='bg-yellow-200 hover:bg-yellow-400' onClick={() => {setType("verb")}}>Verb </button> 
+            <button className='bg-green-200 hover:bg-green-400' onClick={()=>setType("noun")}>Noun</button>
             <div className='ml-4 mr-4 p-1 border-2  grid grid-cols-9 border-gray-700 bg-gray-700 text-white'>
                 <div className='col-span-1'>Word</div>
                 <div className='col-span-1'>Def</div>

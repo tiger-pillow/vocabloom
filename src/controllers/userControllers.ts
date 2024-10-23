@@ -1,4 +1,4 @@
-import EmailSchema from "../schemas/userSchemas.js";
+import EmailSchema from "../schemas/emailSchema.js";
 
 
 export async function addEmail(content: {email: string}){
