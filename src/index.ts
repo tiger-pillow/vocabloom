@@ -6,6 +6,7 @@ import cors from 'cors';
 import homeRouter from './routes/homeRoutes.js'; // have to import with js
 import path from "path";
 import { fileURLToPath } from 'url';
+import {algo} from './algo.js'
 
 dotenv.config();
 const app = express();
@@ -67,6 +68,7 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
+algo();
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

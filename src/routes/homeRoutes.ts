@@ -1,11 +1,7 @@
 import { Router } from 'express';
-import {getCardsByTypeStatus, getAllCards, addCard} from '../controllers/cardControllers.js';
+import {getCardsByTypeStatus, getAllCards, addCard} from '../controllers/adminControllers.js';
 import { addEmail } from '../controllers/userControllers.js';
-import nouncar from '../schemas/nounCardSchema.js';
-import mongoose, { Mongoose } from 'mongoose';
-import NounCard from "../schemas/nounCardSchema.js";
-import VerbCard from "../schemas/verbCardSchema.js";
-import ConjugateCard from "../schemas/conjugateCardSchema.js"
+import {NounCard, VerbCard, ConjugateCard} from "../schemas/motherCardSchema.js";
 const homeRouter = Router();
 
 
