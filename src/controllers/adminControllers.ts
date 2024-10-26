@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { NounCard, VerbCard, ConjugateCard } from "../schemas/motherCardSchema.js";
+import {NounCard, VerbCard, ConjugateCard} from "../schemas/motherCardSchema.js";
 
 export async function getCardsByTypeStatus(cardType: string, status: string = "all") {
     var data;

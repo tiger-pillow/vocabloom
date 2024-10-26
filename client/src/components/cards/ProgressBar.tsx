@@ -1,9 +1,7 @@
 import React, {useContext} from "react";
-import { WordContext } from "../../pages/CardPage";
 
 
-export const ProgressBar = () => {
-    const {cardIndex, totalCardCount} = useContext(WordContext)
+export const ProgressBar = ({ totalCardCount, cardIndex }:{totalCardCount:number, cardIndex:number}) => {
 
     return(
         <div className="flex m-2 border-2">

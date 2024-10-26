@@ -22,21 +22,11 @@ export default function NounComponent({ nounCard }: { nounCard: INounCard }) {
     }
 
     useEffect(() => {
-        const handleKeyDown = (event:any) => {
-            if (event.code === 'Space') {
-                console.log('Space bar was pressed!');
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
         
         // Cursur on the first input 
         if (inputRefs.current[0]) {
             inputRefs.current[0].focus();
         }
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
         
     }, []); // Empty d
 
@@ -48,22 +38,6 @@ export default function NounComponent({ nounCard }: { nounCard: INounCard }) {
                 <div className="text-lg">definition (noun) <span className="text-2xl">{nounCard.definition}</span></div>
             </div>
           
-            {stability < 6 ?
-                <div className="flex space-x-4 justify-center m-10">
-                    <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                        Hard
-                    </button>
-                    <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">
-                        Good
-                    </button>
-                    <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
-                        Easy
-                    </button>
-                    <button className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 rounded">
-                        Again
-                    </button>
-                </div>
-                : 
                 <div className="m-2 flex flex-wrap border-2 border-stone-200 bg-stone-100 p-2 rounded-md">
                     {
                         nounCard.examples.map((group, index) => {
@@ -84,9 +58,6 @@ export default function NounComponent({ nounCard }: { nounCard: INounCard }) {
                         })
                     }
                 </div>
-
-            }
-
 
         </div>
     )

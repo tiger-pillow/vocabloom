@@ -1,11 +1,8 @@
 import mongoose from "mongoose";
 
 
-// first-time user 
-// - choose a deck of cards 
-// 
+// might need a better more indicative name 
+export async function getSessionCard() {
 
-// recurring user 
-
-
-// 
+    return null 
+}; 

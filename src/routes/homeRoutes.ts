@@ -10,6 +10,7 @@ homeRouter.get("/userCards", async (req, res) => {
     res.send(JSON.stringify(data));
 });
 
+
 homeRouter.post("/adminCards", async (req, res) => {
     const data = await getCardsByTypeStatus(req.body.type, "all");
     res.send(JSON.stringify(data))
