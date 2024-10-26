@@ -6,7 +6,7 @@ const homeRouter = Router();
 
 
 homeRouter.get("/userCards", async (req, res) => {
-    const data = await getCardsByTypeStatus("verb", "active");
+    const data = await getCardsByTypeStatus("noun", "active");
     res.send(JSON.stringify(data));
 });
 

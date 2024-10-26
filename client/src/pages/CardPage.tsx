@@ -74,7 +74,7 @@ export default function CardPage(){
                                 
                                 {currStatus === "success" ? <div> ✅ Correct </div> : <div> </div>}
                                 
-                                <div className={`border-2 mt-8 ${currStatus === "going" ? "border-gray-500" : currStatus === "fail" ?  "border-red-500" : "border-green-500"}`}>
+                                <div className={`mt-8 ${currStatus === "going" ? "border-gray-500" : currStatus === "fail" ?  "border-red-500" : "border-green-500"}`}>
                                     <CardComponent card={currCard} />
                                 </div>
 

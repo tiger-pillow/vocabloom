@@ -68,7 +68,7 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-algo();
+// algo();
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
