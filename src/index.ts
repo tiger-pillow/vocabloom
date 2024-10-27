@@ -7,6 +7,7 @@ import homeRouter from './routes/homeRoutes.js'; // have to import with js
 import path from "path";
 import { fileURLToPath } from 'url';
 import {algo} from './algo.js'
+import adminRouter from './routes/adminRoutes.js'
 
 dotenv.config();
 const app = express();
@@ -28,6 +29,7 @@ app.use(cors({
 }));
 
 app.use("/", homeRouter);
+app.use("/", adminRouter);
 
 
 if (process.env.NODE_ENV == "development" && process.env.DB_URI_VOCABLOOM) {

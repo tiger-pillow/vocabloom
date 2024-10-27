@@ -1,14 +1,13 @@
 import { Router } from 'express';
-
+import { addMotherCard, getCardsByTypeStatus , updateCardStatus } from '../controllers/adminControllers.js';
 
 const adminRouter = Router();
 
 // get all cards 
 
-adminRouter.get("/getCardsByTypeStatus", )
+adminRouter.post("/getCardsByTypeStatus", getCardsByTypeStatus)
+adminRouter.post("/updateCardStatus", updateCardStatus)
+adminRouter.post("/addCard", addMotherCard)
 
-// delete card 
 
-
-// change status of a card 
-
+export default adminRouter

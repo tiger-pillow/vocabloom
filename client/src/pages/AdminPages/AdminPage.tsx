@@ -20,8 +20,8 @@ function CardsTable(){
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axiosConfig.post("/adminCards", {
-                    "type": type
+                const response = await axiosConfig.post("/getCardsByTypeStatus", {
+                    "requestType": type
                 });
                 setCards(response.data)
             } catch (err) {
@@ -31,29 +31,20 @@ function CardsTable(){
         fetchData();
     }, [type])
 
-    const delete_card = async (card: ICard) => {
-        const result = await axiosConfig.post("/deleteCard", {
-            "_id": card._id,
-            "type": card.type,
-        })
-        if (result.status === 200){
-            setCards(result.data)
-        }
-        return 
-    }
+    useEffect(()=>{
+        console.log("card data change", cards)
+    }, [cards])
 
-    const change_status = async (card: ICard) => {
-        const result = await axiosConfig.post("/changeStatus", {
-            "_id": card._id,
-            "type": card.type,
+    const update_card = async (card: ICard, action: string) => { 
+        const result = await axiosConfig.post("/updateCardStatus", {
+            "card": card,
+            "action": action,
+            "requestType": type, 
         })
-        if (result.status === 200) {
-            setCards(result.data)
-        }
+        console.log("update card called")
+        setCards([...result.data])
         return
     }
-
-
 
     return (
         <div>
@@ -67,11 +58,10 @@ function CardsTable(){
                 <div className='col-span-1'>Actions</div>
             </div>
             {
-                cards?.map((card)=>{
+                cards?.map((card, i )=>{
                     return(
-                        <CardsTableRow card={card as IVerbCard} 
-                        onDelete= {()=>delete_card(card as ICard)}
-                        onChangeStatus={() => change_status(card as ICard)}
+                        <CardsTableRow card={card as IVerbCard} key = {i}
+                            update_card={update_card}
                         />
                     )
             })
@@ -81,7 +71,7 @@ function CardsTable(){
     )
 }
 
-function CardsTableRow({ card, onDelete, onChangeStatus }: { card: INounCard | IVerbCard, onDelete: () => Promise<void>, onChangeStatus: () => Promise<void> }) {
+function CardsTableRow({ card, update_card }: { card: INounCard | IVerbCard, update_card: (card: any, action: string) => Promise<void> }) {
     
     let statusClassName = card.status === "active" ? 'm-2 p-2 bg-green-200 rounded-md hover:bg-gray-200' : 'm-2 p-2 bg-gray-200 rounded-md text-xs hover:bg-green-200'
     return (
@@ -92,11 +82,11 @@ function CardsTableRow({ card, onDelete, onChangeStatus }: { card: INounCard | I
             <div className='col-span-3 border'>{card.examplesTranslation}</div>
             <div className='col-span-1 border'>
                 <button className={statusClassName}
-                onClick={onChangeStatus}
+                    onClick={() => { update_card(card, "changeStatus")}}
                 > {card.status} </button>
                 
                 <button className='m-2 p-2 bg-red-200 rounded-md hover:bg-red-500'
-                    onClick={onDelete}>delete</button>
+                    onClick={() => { update_card(card, "delete") }}>delete</button>
 
             </div>
         </div>
