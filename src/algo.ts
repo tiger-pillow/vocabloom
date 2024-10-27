@@ -3,35 +3,21 @@
 
 import { createEmptyCard, formatDate, fsrs, generatorParameters, Rating, Grades } from 'ts-fsrs';
 import { addUser } from './controllers/userControllers.js';
-import { getCardsByTypeStatus } from './controllers/adminControllers.js';
-import ChildCard from './schemas/childCardSchema.js';
 import mongoose from 'mongoose';
 
 
 export async function algo () {
-    const data = await getCardsByTypeStatus("noun")
-    let card; 
-    if (data) {
-        card = data[0]
-    } else {
-        return 
-    }
+
     const params = generatorParameters({ enable_fuzz: true, enable_short_term: false });
     const f = fsrs(params);
     const fsrsCard = createEmptyCard();
+    console.log("_________fsrs Card ___________", fsrsCard)
     const scheduling_cards = f.repeat(fsrsCard, new Date());
+    
     console.log(scheduling_cards[Rating.Good])
 
-    const childCard = new ChildCard({
-        mothercard_id: card._id, 
-        mothercard_type: card.type, 
-        user_id: "671ab502ae1e4f9fc8bf19c9", 
-        status: "active",
-        card: scheduling_cards[Rating.Good].card
-    })
-
-    // childCard.save()
-    console.log("saved child card")
+    
+  
 }
 
 // 1. add a user 

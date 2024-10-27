@@ -1,11 +1,7 @@
 import { Router } from 'express';
-import { getAllCards, addCard} from '../controllers/adminControllers.js';
 import { addEmail } from '../controllers/userControllers.js';
 import {NounCard, VerbCard, ConjugateCard} from "../schemas/motherCardSchema.js";
 const homeRouter = Router();
-
-
-
 
 
 homeRouter.post("/waitlist", async (req, res) => {

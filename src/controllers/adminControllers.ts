@@ -1,5 +1,5 @@
 import { NounCard, VerbCard, ConjugateCard } from "../schemas/motherCardSchema.js";
-import { deleteMotherCard, changeMotherCardStatus, getMotherCardByType } from "./DBhelper.js";
+import { deleteMotherCard, changeMotherCardStatus, getMotherCardByType } from "./adminDBhelper.js";
 
 export async function getCardsByTypeStatus (req:any, res: any) {
     var data;

@@ -1,11 +1,9 @@
 import { Router } from 'express';
-import { getSessionCard } from '../controllers/sessionControllers'
+import { getSessionCard } from '../controllers/sessionControllers.js'
 
 const sessionRouter = Router();
 
-// post feedback, get new card 
-
-sessionRouter.post("/getSessionCard", getSessionCard );
+sessionRouter.post("/getSessionCard", getSessionCard);
 
 
 export default sessionRouter;

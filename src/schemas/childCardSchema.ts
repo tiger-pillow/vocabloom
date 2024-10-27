@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
-import ObjectId from "mongoose";
 
 const ChildCard = new mongoose.Schema({
-    mothercard_id: { type: mongoose.Types.ObjectId},
-    mothercard_type: {type: String}, 
-    user_id: { type: mongoose.Types.ObjectId }, 
+    mothercard_id: { type: mongoose.Types.ObjectId, required: true},
+    mothercard_type: { type: String, required: true}, 
+    user_id: { type: mongoose.Types.ObjectId, required: true}, 
     time_created: {type: Date, default: Date.now}, 
     status: {type: String}, // in case the user chooses to remove this card etc
     
@@ -22,5 +21,4 @@ const ChildCard = new mongoose.Schema({
     }
     
 })
-
 export default mongoose.model("ChildCard", ChildCard);

@@ -1,5 +1,6 @@
-import mongoose, { SortOrder } from "mongoose";
+import mongoose, { SortOrder, Types} from "mongoose";
 import { NounCard, VerbCard, ConjugateCard } from "../schemas/motherCardSchema.js";
+import { idText } from "typescript";
 
 
 export async function deleteMotherCard(card:any) {
@@ -65,11 +66,31 @@ export async function getMotherCardByType(type: string, status: string = "all", 
             default:
                 break;
         }
+        if (status === "active") { 
+            data = data?.filter((card) => card.status === "active")
+        }
+    
         return data
     } catch (error) {
         console.log("getMotherCardByType() error ", error)
-        return 500
+        return []
     }
     
     
+}
+
+export async function getOneMotherCard(id: Types.ObjectId, type: string){
+    let data; 
+    switch (type) {
+        case "noun": 
+            data =  await NounCard.findById(id).exec()
+            break
+        case "verb": 
+            data = await VerbCard.findById(id).exec()
+            break
+        case "conjugate": 
+            data = await  ConjugateCard.findById(id).exec()
+            break
+    }
+    return data 
 }
