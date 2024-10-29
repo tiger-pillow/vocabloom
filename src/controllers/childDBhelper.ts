@@ -59,6 +59,20 @@ export async function updateOneChildCard(id: Types.ObjectId, feedback: string) {
     } catch (error) {
         console.log("updateOneChildCard error is ", error)
     }
-    
-    
+}
+
+
+export async function getNextDueCard(user_id: Types.ObjectId){
+    try {
+        // Find documents with the specific user_id
+        const documents = await ChildCard.find({ user_id: user_id })
+            // Sort by card.due in ascending order to get the oldest first
+            .sort({ "card.due": 1 })
+            .limit(1) // Get the oldest date only
+            .exec();
+
+        return documents[0]
+    } catch (error) {
+        console.error("Error retrieving documents:", error);
+    }
 }

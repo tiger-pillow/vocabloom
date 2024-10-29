@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+export interface IChildCard {
+    mothercard_id: mongoose.Types.ObjectId, 
+    mothercard_type: string
+}
+
 const ChildCard = new mongoose.Schema({
     mothercard_id: { type: mongoose.Types.ObjectId, required: true},
     mothercard_type: { type: String, required: true}, 

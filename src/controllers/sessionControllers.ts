@@ -1,9 +1,8 @@
-import mongoose, {Types} from "mongoose";
-import { Card, Rating } from "ts-fsrs";
+import mongoose, {ObjectId, Types} from "mongoose";
 import { createChildCard } from "./childDBhelper.js";
+import { IChildCard } from "../schemas/childCardSchema.js";
 import { getMotherCardByType, getOneMotherCard} from "./adminDBhelper.js";
-import { getChildCardsByUser, updateOneChildCard } from "./childDBhelper.js"
-import {f} from "../index.js"
+import { getChildCardsByUser, updateOneChildCard, getNextDueCard } from "./childDBhelper.js"
 
 export async function getSessionCard(req:any, res:any) {
     let user_id = new Types.ObjectId("671ab502ae1e4f9fc8bf19c9")
@@ -29,7 +28,12 @@ export async function getSessionCard(req:any, res:any) {
     }
     else {
         console.log("req card", req.body.feedback)
-        updateOneChildCard(req.body.childCard_id, req.body.feedback )
+        await updateOneChildCard(req.body.childCard_id, req.body.feedback )
+        let nextChild = await getNextDueCard(user_id)
+        console.log("next child is ", nextChild)
+        if (nextChild !== undefined){
+            let nextMother = await getOneMotherCard(nextChild.mothercard_id as Types.ObjectId, nextChild.mothercard_type)
+        }
     }
    
 

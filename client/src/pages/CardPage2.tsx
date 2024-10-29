@@ -25,7 +25,7 @@ export default function CardPage2() {
             childCard_id: id, 
             feedback: feedback
         })
-        console.log("new card is ", newcard)
+        
     }
 
     useEffect(()=>{
