@@ -6,6 +6,7 @@ export interface ICard {
     definition: string,
     status: string,
     _id: string, // mongoId
+    deck: Array<[string, string]>// [deckName, deckID]
 }
 
 export interface INounCard extends ICard {

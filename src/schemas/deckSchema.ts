@@ -1,8 +1,8 @@
 import mongoose, { mongo, SortOrder, Types } from "mongoose";
 
 const DeckSchema = new mongoose.Schema({
-    name: {type: String}, 
-    description: {type: String}, 
+    deck_name: {type: String}, 
+    deck_description: {type: String}, 
     decksize: {type: Number}, // number of cards 
     usercount: {type: Number},
     mothercards: {type: [Types.ObjectId]}

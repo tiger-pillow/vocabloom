@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 // Define the Flashcard schema
 const NounCardSchema = new mongoose.Schema({
     type: { type: String, required: true},
@@ -16,7 +15,11 @@ const NounCardSchema = new mongoose.Schema({
     },
     examplesTranslation: {
         type: String
-    }
+    },
+    decks: {
+        type: [
+            [ {type: String}, {type: mongoose.Schema.Types.ObjectId} ]]
+        } ,
 });
 
 const VerbCardSchema = new mongoose.Schema({
@@ -33,7 +36,8 @@ const VerbCardSchema = new mongoose.Schema({
             ],
         required: true,
     },
-    examplesTranslation: { type: String }
+    examplesTranslation: { type: String },
+    decks: { type: [[{ type: String }, { type: mongoose.Schema.Types.ObjectId }]] },
 }
 });
 
@@ -48,6 +52,7 @@ const ConjugateCardSchema = new mongoose.Schema({
     },
     tense: { type: String, required: true, },
     conjugations: { type: [String], required: true,},
+    decks: { type: [[{ type: String }, { type: mongoose.Schema.Types.ObjectId }]] },
 });
 
 

@@ -21,10 +21,11 @@ export default function CardPage2() {
     const onFeedback = async (feedback: string) => {
         // send response to server, and get new card 
         console.log("onFeedback() ", feedback)
-        const newcard = await axiosConfig.post("/getSessionCard", {
+        const response = await axiosConfig.post("/getSessionCard", {
             childCard_id: id, 
             feedback: feedback
         })
+        setMotherCard(response.data)
         
     }
 

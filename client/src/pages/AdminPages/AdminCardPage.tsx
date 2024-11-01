@@ -35,11 +35,12 @@ function CardsTable(){
         console.log("card data change", cards)
     }, [cards])
 
-    const update_card = async (card: ICard, action: string) => { 
+    const update_card = async (card: ICard, action: string, deck?: string) => { 
         const result = await axiosConfig.post("/updateCardStatus", {
             "card": card,
             "action": action,
             "requestType": type, 
+            "deck": deck
         })
         console.log("update card called")
         setCards([...result.data])
@@ -54,7 +55,7 @@ function CardsTable(){
                 <div className='col-span-1'>Word</div>
                 <div className='col-span-1'>Def</div>
                 <div className='col-span-3'>Example</div>
-                <div className='col-span-3'>Translation</div>
+                <div className='col-span-3'>Deck</div>
                 <div className='col-span-1'>Actions</div>
             </div>
             {
@@ -71,15 +72,31 @@ function CardsTable(){
     )
 }
 
-function CardsTableRow({ card, update_card }: { card: INounCard | IVerbCard, update_card: (card: any, action: string) => Promise<void> }) {
+
+function CardsTableRow({ card, update_card }: { card: INounCard | IVerbCard, update_card: (card: any, action: string, deck?: string) => Promise<void> }) {
     
     let statusClassName = card.status === "active" ? 'm-2 p-2 bg-green-200 rounded-md hover:bg-gray-200' : 'm-2 p-2 bg-gray-200 rounded-md text-xs hover:bg-green-200'
     return (
         <div className='ml-4 mr-4 bg-grey-light grid grid-cols-9'>
             <div className='col-span-1 border'>{card.word}</div>
             <div className='col-span-1 border'>{card.definition}</div>
-            <div className='col-span-3 break-words border'>{card.examples.map((w) => {return (<span className='pr-1 inline-block'>{w[0]}</span>)})}</div>
-            <div className='col-span-3 border'>{card.examplesTranslation}</div>
+            <div className='col-span-3 break-words border'>
+                <div className='text-blue-800'>{card.examples.map((w) => { return (<span className='pr-1 inline-block'>{w[0]}</span>) })}</div>
+                
+                <div className=''>{card.examplesTranslation}</div>
+                
+                </div>
+            <div className='col-span-3 border'>
+                {card.deck?.map((d) => { return (<span className='pr-1 inline-block'>{d[0]}</span>) })}
+                <select className="mt-2 p-1 border rounded">
+                    {card.deck?.map((d, index) => (
+                        <option key={index} value={d[1]} onClick={() => {update_card(card, "changeDeck", d[1])}}>
+                            {d[0]}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
             <div className='col-span-1 border'>
                 <button className={statusClassName}
                     onClick={() => { update_card(card, "changeStatus")}}

@@ -1,30 +1,31 @@
 import mongoose, {ObjectId, Types} from "mongoose";
 import { createChildCard } from "./childDBhelper.js";
-import { IChildCard } from "../schemas/childCardSchema.js";
-import { getMotherCardByType, getOneMotherCard} from "./adminDBhelper.js";
+import childCardSchema, { IChildCard } from "../schemas/childCardSchema.js";
+import { getMotherCardByType, getMotherCardById} from "./adminDBhelper.js";
 import { getChildCardsByUser, updateOneChildCard, getNextDueCard } from "./childDBhelper.js"
 
 export async function getSessionCard(req:any, res:any) {
     let user_id = new Types.ObjectId("671ab502ae1e4f9fc8bf19c9")
     console.log("req body content", req.body.feedback)
     if (req.body.feedback === undefined) { // first card 
-        let cards = await getChildCardsByUser(user_id)
-        if (cards.length === 0){
+        let currentChildCard = await getNextDueCard(user_id)
+        if (currentChildCard === undefined){
             console.log("******** creating new child cards")
             const deckOfCards = await getMotherCardByType("noun", "active")
             deckOfCards?.map((card) => {
                 createChildCard(user_id, card._id, card.type)
             })
-            cards = await getChildCardsByUser(user_id)
+            currentChildCard = await getNextDueCard(user_id)
+        } 
+        if (currentChildCard){
+            let motherCard = await getMotherCardById(currentChildCard.mothercard_id as Types.ObjectId, currentChildCard.mothercard_type)
+            let result = {
+                motherCard: motherCard,
+                childCard_id: currentChildCard._id
+            }
+            res.send(JSON.stringify(result))
         }
-
-        let currentChildCard = cards[0] // FIXME: logic needs to be changed 
-        let motherCard = await getOneMotherCard(currentChildCard.mothercard_id as Types.ObjectId, currentChildCard.mothercard_type)
-        let result = {
-            motherCard: motherCard,
-            childCard_id: currentChildCard._id
-        }
-        res.send(JSON.stringify(result))
+        
     }
     else {
         console.log("req card", req.body.feedback)
@@ -32,7 +33,9 @@ export async function getSessionCard(req:any, res:any) {
         let nextChild = await getNextDueCard(user_id)
         console.log("next child is ", nextChild)
         if (nextChild !== undefined){
-            let nextMother = await getOneMotherCard(nextChild.mothercard_id as Types.ObjectId, nextChild.mothercard_type)
+            let nextMother = await getMotherCardById(nextChild.mothercard_id as Types.ObjectId, nextChild.mothercard_type)
+            console.log("-----next mother is ", nextMother)
+            res.send(JSON.stringify(nextMother))
         }
     }
    

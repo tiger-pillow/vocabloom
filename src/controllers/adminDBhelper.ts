@@ -1,6 +1,5 @@
 import mongoose, { SortOrder, Types} from "mongoose";
 import { NounCard, VerbCard, ConjugateCard } from "../schemas/motherCardSchema.js";
-import { idText } from "typescript";
 
 
 export async function deleteMotherCard(card:any) {
@@ -79,7 +78,7 @@ export async function getMotherCardByType(type: string, status: string = "all", 
     
 }
 
-export async function getOneMotherCard(id: Types.ObjectId, type: string){
+export async function getMotherCardById(id: Types.ObjectId, type: string){
     let data; 
     switch (type) {
         case "noun": 
