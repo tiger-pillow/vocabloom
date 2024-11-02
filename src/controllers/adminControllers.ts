@@ -27,7 +27,7 @@ export async function getCardsByTypeStatus (req:any, res: any) {
 
 export async function updateCardStatus(req: any, res: any) {
     console.log("called updateCardStatus action is ", req.body.action)
-    let motherCard
+    let motherCard, deck
     switch (req.body.action) {
         case "delete": 
             await deleteMotherCard(req.body.card)
@@ -42,21 +42,26 @@ export async function updateCardStatus(req: any, res: any) {
             break;
         case "addDeck":
             motherCard = await getMotherCardById(req.body.card._id, req.body.card.type) as any;
-            let deck = await Deck.findById(req.body.deck_id)
-            console.log("-----_____-------- deck ", deck)
+            deck = await Deck.findById(req.body.deck_id)
             if (motherCard && deck) {
                 motherCard.decks.push([deck.deck_name, req.body.deck_id])
                 motherCard.markModified('decks');
+                deck.mothercards.push(motherCard._id)
+                deck.markModified('mothercards')
+                await deck.save()
                 await motherCard.save();
             } else {
                 console.log("Mother card not found");
             }
             break;
         case "removeDeck":
-            console.log("remove deck")
             motherCard = await getMotherCardById(req.body.card._id, req.body.card.type) as any;
-            if (motherCard) {
+            deck = await Deck.findById(req.body.deck_id) as any;
+            if (motherCard && deck) {
                 motherCard.decks = motherCard.decks.filter((deck:any) => deck[1] !== req.body.deck_id)
+                deck.mothercards = deck.mothercards.filter((card_id: any) => card_id.toString() !== req.body.card._id)
+                deck.markModified('mothercards')
+                await deck.save()
                 await motherCard.save()
             }
             break;
