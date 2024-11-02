@@ -24,8 +24,7 @@ function CardsTable(){
                 const response = await axiosConfig.post("/getCardsByTypeStatus", {
                     "requestType": type
                 });
-                const decksResponse = await axiosConfig.get("/getDecks")
-                console.log("cards", response.data)
+                let decksResponse = await axiosConfig.get("/getDecks")
                 setDecks(decksResponse.data)
                 setCards(response.data)
             } catch (err) {
@@ -92,6 +91,7 @@ function CardsTableRow({ card, decks, update_card }: { card: INounCard | IVerbCa
                 {card.decks?.map((d) => { return (<span className='border bg-yellow-50 border-yellow-200 rounded-md p-1 m-2 inline-block'>{d[0]} 
                     <button onClick={() => {update_card(card, "removeDeck", d[1])}}> ❌ </button></span>) })}
                 <select className="mt-2 p-1 border rounded" onChange={(e) => {update_card(card, "addDeck", e.target.value )}}>
+                    <option value="">Select</option>
                     {decks?.map((d, index) => (
                         <option key={d[0]} value={d[1]}>
                             {d[0]}
