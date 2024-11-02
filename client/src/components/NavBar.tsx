@@ -10,7 +10,7 @@ const NavBar = () => {
                         <a href="/" className="text-gray-600 hover:text-black">
                             Landing
                         </a>
-                    <a href="/cards" className="text-gray-600 hover:text-black">
+                    <a href="/cards2" className="text-gray-600 hover:text-black">
                         Cards
                     </a>
                        
@@ -29,8 +29,8 @@ const NavBar = () => {
                         <a href="/addcard" className="text-gray-600 hover:text-black">
                             add card
                         </a>
-                        <a href="/admin" className="text-gray-600 hover:text-black">
-                            deck
+                        <a href="/admin/cards" className="text-gray-600 hover:text-black">
+                            cards
                         </a>
                     </div>
                 </div>

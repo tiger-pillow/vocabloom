@@ -1,12 +1,29 @@
 import mongoose, {ObjectId, Types} from "mongoose";
 import { createChildCard } from "./childDBhelper.js";
-import childCardSchema, { IChildCard } from "../schemas/childCardSchema.js";
+import ChildCard from "../schemas/childCardSchema.js"
 import { getMotherCardByType, getMotherCardById} from "./adminDBhelper.js";
-import { getChildCardsByUser, updateOneChildCard, getNextDueCard } from "./childDBhelper.js"
+import { getChildCardsByUser, updateOneChildCard } from "./childDBhelper.js"
 
+
+
+export async function getNextDueCard(user_id: Types.ObjectId) {
+    try {
+        // Find documents with the specific user_id
+        const documents = await ChildCard.find({ user_id: user_id })
+            // Sort by card.due in ascending order to get the oldest first
+            .sort({ "card.due": 1 })
+            .limit(1) // Get the oldest date only
+            .exec();
+
+        return documents[0]
+    } catch (error) {
+        console.error("Error retrieving documents:", error);
+    }
+}
 export async function getSessionCard(req:any, res:any) {
     let user_id = new Types.ObjectId("671ab502ae1e4f9fc8bf19c9")
     console.log("req body content", req.body.feedback)
+
     if (req.body.feedback === undefined) { // first card 
         let currentChildCard = await getNextDueCard(user_id)
         if (currentChildCard === undefined){
@@ -39,12 +56,6 @@ export async function getSessionCard(req:any, res:any) {
         }
     }
    
-
-
-    // **************** If the user has never logged in before ******************
-
-    // get mother cards 
-    
 
 }; 
 

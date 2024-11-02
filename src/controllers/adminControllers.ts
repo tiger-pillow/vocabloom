@@ -1,17 +1,6 @@
 import { NounCard, VerbCard, ConjugateCard} from "../schemas/motherCardSchema.js";
 import { deleteMotherCard, getMotherCardByType, getMotherCardById } from "./adminDBhelper.js";
 import { Deck } from "../schemas/deckSchema.js";
-import mongoose from "mongoose";
-
-export async function createDeck(req: any, res: any) {
-    let newDeck = new Deck({
-        deck_name: req.body.deck_name,
-        deck_description: req.body.deck_description,
-    })
-    await newDeck.save()
-    res.send(JSON.stringify(newDeck))
-}
-
 
 export async function getCardsByTypeStatus (req:any, res: any) {
     var data;
@@ -42,11 +31,12 @@ export async function updateCardStatus(req: any, res: any) {
             break;
         case "addDeck":
             motherCard = await getMotherCardById(req.body.card._id, req.body.card.type) as any;
-            deck = await Deck.findById(req.body.deck_id)
+            deck = await Deck.findById(req.body.deck_id) as any;
             if (motherCard && deck) {
                 motherCard.decks.push([deck.deck_name, req.body.deck_id])
                 motherCard.markModified('decks');
                 deck.mothercards.push(motherCard._id)
+                deck.decksize += 1
                 deck.markModified('mothercards')
                 await deck.save()
                 await motherCard.save();
@@ -60,13 +50,13 @@ export async function updateCardStatus(req: any, res: any) {
             if (motherCard && deck) {
                 motherCard.decks = motherCard.decks.filter((deck:any) => deck[1] !== req.body.deck_id)
                 deck.mothercards = deck.mothercards.filter((card_id: any) => card_id.toString() !== req.body.card._id)
+                deck.decksize -= 1
                 deck.markModified('mothercards')
                 await deck.save()
                 await motherCard.save()
             }
             break;
         }
-            
     let newdata = await getMotherCardByType(req.body.requestType)
     res.send(JSON.stringify(newdata))
     
@@ -103,7 +93,6 @@ export async function addMotherCard(req: any, res: any) {
         console.log("unable to save card ", err)
         return 501
     }
-
 }
 
 
@@ -112,3 +101,17 @@ export async function getDecks(req: any, res: any) {
     let decksArray = decks.map((deck) => [deck.deck_name, deck._id])
     res.send(JSON.stringify(decksArray))
 }
+
+
+export async function createDeck(req: any, res: any) {
+    let newDeck = new Deck({
+        deck_name: req.body.deck_name,
+        deck_description: req.body.deck_description,
+        decksize: 0,
+        usercount: 0,
+        mothercards: []
+    })
+    await newDeck.save()
+    res.send(JSON.stringify(newDeck))
+}
+

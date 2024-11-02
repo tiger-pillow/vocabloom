@@ -4,16 +4,13 @@ import axiosConfig from "../../axiosConfig";
 import NavBar from '../../components/NavBar';
 
 export default function AdminPage() {
-
 return (
     <div>
         <NavBar></NavBar>
         <CardsTable />
     </div>
 )
-    
 }
-
 function CardsTable(){
     const [type, setType] = useState("verb")
     const [cards, setCards] = useState<ICard[]>() 

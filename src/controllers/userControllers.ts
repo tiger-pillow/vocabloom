@@ -1,13 +1,21 @@
 import EmailSchema from "../schemas/emailSchema.js";
 import User from '../schemas/userSchema.js'
+import bcrypt from 'bcrypt';
+
 
 export async function addEmail(content: {email: string}){
     const newEmail = new EmailSchema({
         email: content.email
     })
-
     await newEmail?.save()
     console.log("email saved successfully ", content.email)
+}
+
+
+export async function hashPassword(password: string): Promise<string> {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword;
 }
 
 export async function addUser(content: {

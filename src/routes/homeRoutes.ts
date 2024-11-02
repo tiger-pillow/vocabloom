@@ -13,5 +13,6 @@ homeRouter.post("/waitlist", async (req, res) => {
     })
 })
 
+homeRouter.post("/api/register", async (req, res) => {})
 
 export default homeRouter;
