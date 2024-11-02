@@ -1,8 +1,7 @@
 import { NounCard, VerbCard, ConjugateCard} from "../schemas/motherCardSchema.js";
-import { deleteMotherCard, changeMotherCardStatus, getMotherCardByType, getMotherCardById } from "./adminDBhelper.js";
-
-
+import { deleteMotherCard, getMotherCardByType, getMotherCardById } from "./adminDBhelper.js";
 import { Deck } from "../schemas/deckSchema.js";
+import mongoose from "mongoose";
 
 export async function createDeck(req: any, res: any) {
     let newDeck = new Deck({
@@ -11,29 +10,6 @@ export async function createDeck(req: any, res: any) {
     })
     await newDeck.save()
     res.send(JSON.stringify(newDeck))
-}
-
-// FIXME: https://stackoverflow.com/questions/64607253/typescript-and-mongoose-property-x-does-not-exist-on-type-document 
-// Read this tomorrow 
-export async function changeMotherCardDeck(req: any, res: any) {
-    try {
-        const card = await getMotherCardById(req.body.card._id, req.body.card.type) as any;
-        if (!card) {
-            return res.status(404).send("Card not found");
-        }
-        if (!card.decks) {  // if the card has no decks, create an empty array
-            card.decks = []
-        }
-
-        card.decks.push([req.body.deckname, req.body.deck_id])
-        
-        await card.save();
-        res.status(200).json(card);
-
-    } catch (error) {
-        console.error("Error in changeMotherCardDeck:", error);
-        res.status(500).send("Internal server error");
-    }
 }
 
 
@@ -51,14 +27,41 @@ export async function getCardsByTypeStatus (req:any, res: any) {
 
 export async function updateCardStatus(req: any, res: any) {
     console.log("called updateCardStatus action is ", req.body.action)
+    let motherCard
     switch (req.body.action) {
         case "delete": 
             await deleteMotherCard(req.body.card)
+            break;
         case "changeStatus": 
-            await changeMotherCardStatus(req.body.card)
-        case "changeDeck":
-
-    }
+            motherCard = await getMotherCardById(req.body.card._id, req.body.card.type) as any;
+            if (motherCard) {
+                let newStatus = motherCard.status === "active" ? "dormant" : "active"
+                motherCard.status = newStatus
+                await motherCard.save()
+            }
+            break;
+        case "addDeck":
+            motherCard = await getMotherCardById(req.body.card._id, req.body.card.type) as any;
+            let deck = await Deck.findById(req.body.deck_id)
+            console.log("-----_____-------- deck ", deck)
+            if (motherCard && deck) {
+                motherCard.decks.push([deck.deck_name, req.body.deck_id])
+                motherCard.markModified('decks');
+                await motherCard.save();
+            } else {
+                console.log("Mother card not found");
+            }
+            break;
+        case "removeDeck":
+            console.log("remove deck")
+            motherCard = await getMotherCardById(req.body.card._id, req.body.card.type) as any;
+            if (motherCard) {
+                motherCard.decks = motherCard.decks.filter((deck:any) => deck[1] !== req.body.deck_id)
+                await motherCard.save()
+            }
+            break;
+        }
+            
     let newdata = await getMotherCardByType(req.body.requestType)
     res.send(JSON.stringify(newdata))
     
@@ -98,3 +101,9 @@ export async function addMotherCard(req: any, res: any) {
 
 }
 
+
+export async function getDecks(req: any, res: any) {
+    let decks = await Deck.find()
+    let decksArray = decks.map((deck) => [deck.deck_name, deck._id])
+    res.send(JSON.stringify(decksArray))
+}

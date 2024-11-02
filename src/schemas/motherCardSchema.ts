@@ -18,7 +18,7 @@ const NounCardSchema = new mongoose.Schema({
     },
     decks: {
         type: [
-            [ {type: String}, {type: mongoose.Schema.Types.ObjectId} ]]
+            [ {type: String}, {type: String} ]]
         } ,
 });
 
@@ -26,7 +26,7 @@ const VerbCardSchema = new mongoose.Schema({
     type: { type: String, required: true, },
     time_added: { type: Date, default: Date.now },
     status: { type: String,},
-    word: {type: String, required: true,  trim: true, 
+    word: {type: String, required: true,  trim: true}, 
     wordID: { type: mongoose.Schema.Types.ObjectId, required: false, },
     definition: { type: String, required: true, },
     examples: { 
@@ -37,9 +37,9 @@ const VerbCardSchema = new mongoose.Schema({
         required: true,
     },
     examplesTranslation: { type: String },
-    decks: { type: [[{ type: String }, { type: mongoose.Schema.Types.ObjectId }]] },
+    decks: { type: [[{ type: String }, { type: String }]] },
 }
-});
+);
 
 
 const ConjugateCardSchema = new mongoose.Schema({
@@ -47,12 +47,12 @@ const ConjugateCardSchema = new mongoose.Schema({
     time_added: { type: Date, default: Date.now },
     status: { type: String, },
     word: { type: String, required: true, trim: true, },
-    wordID: { type: mongoose.Schema.Types.ObjectId, required: false,},
+    wordID: { type: mongoose.Schema.Types.ObjectId, required: false},
     definition: { type: String, required: true, 
     },
     tense: { type: String, required: true, },
     conjugations: { type: [String], required: true,},
-    decks: { type: [[{ type: String }, { type: mongoose.Schema.Types.ObjectId }]] },
+    decks: { type: [[{ type: String }, { type: String }]] },
 });
 
 

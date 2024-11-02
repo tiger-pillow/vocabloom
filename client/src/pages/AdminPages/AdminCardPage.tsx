@@ -17,12 +17,16 @@ return (
 function CardsTable(){
     const [type, setType] = useState("verb")
     const [cards, setCards] = useState<ICard[]>() 
+    const [decks, setDecks] = useState<[string, string][]>()
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axiosConfig.post("/getCardsByTypeStatus", {
                     "requestType": type
                 });
+                const decksResponse = await axiosConfig.get("/getDecks")
+                console.log("cards", response.data)
+                setDecks(decksResponse.data)
                 setCards(response.data)
             } catch (err) {
                 console.error(err);
@@ -31,18 +35,16 @@ function CardsTable(){
         fetchData();
     }, [type])
 
-    useEffect(()=>{
-        console.log("card data change", cards)
-    }, [cards])
 
-    const update_card = async (card: ICard, action: string, deck?: string) => { 
+    const update_card = async (card: ICard, action: string, deck_id?: string) => { 
+        console.log(action, deck_id)
+
         const result = await axiosConfig.post("/updateCardStatus", {
             "card": card,
             "action": action,
             "requestType": type, 
-            "deck": deck
+            "deck_id": deck_id, 
         })
-        console.log("update card called")
         setCards([...result.data])
         return
     }
@@ -61,7 +63,7 @@ function CardsTable(){
             {
                 cards?.map((card, i )=>{
                     return(
-                        <CardsTableRow card={card as IVerbCard} key = {i}
+                        <CardsTableRow card={card as IVerbCard} decks={decks} key = {i}
                             update_card={update_card}
                         />
                     )
@@ -73,7 +75,7 @@ function CardsTable(){
 }
 
 
-function CardsTableRow({ card, update_card }: { card: INounCard | IVerbCard, update_card: (card: any, action: string, deck?: string) => Promise<void> }) {
+function CardsTableRow({ card, decks, update_card }: { card: INounCard | IVerbCard, decks: [string, string][] | undefined, update_card: (card: any, action: string, deck_id?: string) => Promise<void> }) {
     
     let statusClassName = card.status === "active" ? 'm-2 p-2 bg-green-200 rounded-md hover:bg-gray-200' : 'm-2 p-2 bg-gray-200 rounded-md text-xs hover:bg-green-200'
     return (
@@ -87,10 +89,11 @@ function CardsTableRow({ card, update_card }: { card: INounCard | IVerbCard, upd
                 
                 </div>
             <div className='col-span-3 border'>
-                {card.deck?.map((d) => { return (<span className='pr-1 inline-block'>{d[0]}</span>) })}
-                <select className="mt-2 p-1 border rounded">
-                    {card.deck?.map((d, index) => (
-                        <option key={index} value={d[1]} onClick={() => {update_card(card, "changeDeck", d[1])}}>
+                {card.decks?.map((d) => { return (<span className='border bg-yellow-50 border-yellow-200 rounded-md p-1 m-2 inline-block'>{d[0]} 
+                    <button onClick={() => {update_card(card, "removeDeck", d[1])}}> ❌ </button></span>) })}
+                <select className="mt-2 p-1 border rounded" onChange={(e) => {update_card(card, "addDeck", e.target.value )}}>
+                    {decks?.map((d, index) => (
+                        <option key={d[0]} value={d[1]}>
                             {d[0]}
                         </option>
                     ))}
