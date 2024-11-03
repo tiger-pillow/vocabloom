@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 // Define the Flashcard schema
 const NounCardSchema = new mongoose.Schema({
     type: { type: String, required: true},
-    time_added: {type: Date, default: Date.now},
+    time_created: {type: Date, default: Date.now},
     status: { type: String, }, 
     word: {type: String,required: true, trim: true, },
-    wordID: { type: mongoose.Schema.Types.ObjectId, required: false, },
+    word_id: { type: mongoose.Schema.Types.ObjectId, required: false, },
     definition: { type: String, required: true, trim: true, }, 
     examples: {
         type: [
@@ -13,7 +13,7 @@ const NounCardSchema = new mongoose.Schema({
             ],
         required: true,
     },
-    examplesTranslation: {
+    examples_translation: {
         type: String
     },
     decks: {
@@ -24,10 +24,10 @@ const NounCardSchema = new mongoose.Schema({
 
 const VerbCardSchema = new mongoose.Schema({
     type: { type: String, required: true, },
-    time_added: { type: Date, default: Date.now },
+    time_created: { type: Date, default: Date.now },
     status: { type: String,},
     word: {type: String, required: true,  trim: true}, 
-    wordID: { type: mongoose.Schema.Types.ObjectId, required: false, },
+    word_id: { type: mongoose.Schema.Types.ObjectId, required: false, },
     definition: { type: String, required: true, },
     examples: { 
         type:
@@ -36,7 +36,7 @@ const VerbCardSchema = new mongoose.Schema({
             ],
         required: true,
     },
-    examplesTranslation: { type: String },
+    examples_translation: { type: String },
     decks: { type: [[{ type: String }, { type: String }]] },
 }
 );
@@ -44,10 +44,10 @@ const VerbCardSchema = new mongoose.Schema({
 
 const ConjugateCardSchema = new mongoose.Schema({
     type: { type: String, required: true, },
-    time_added: { type: Date, default: Date.now },
+    time_created: { type: Date, default: Date.now },
     status: { type: String, },
     word: { type: String, required: true, trim: true, },
-    wordID: { type: mongoose.Schema.Types.ObjectId, required: false},
+    word_id: { type: mongoose.Schema.Types.ObjectId, required: false},
     definition: { type: String, required: true, 
     },
     tense: { type: String, required: true, },

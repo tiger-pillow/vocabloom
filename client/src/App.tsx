@@ -5,7 +5,8 @@ import AddCardPage from './pages/AdminPages/AddCardPage';
 import WaitlistPage from './pages/WaitlistPage';
 import CardPage2 from './pages/CardPage2';
 import AdminDeckPage from './pages/AdminPages/AdminDeckPage';
-import RegisterPage from './pages/RegisterPage';
+import SignUpPage from './pages/SignUpPage';
+
 function App() {
   return (
     <div className="App">
@@ -18,7 +19,7 @@ function App() {
             <Route path="/admin/cards" element={<AdminPage />} /> {/* Admin Route */}
             <Route path= "/addcard" element = {<AddCardPage/>} />
             <Route path="/admin/deck" element={<AdminDeckPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
           </Routes>
         </Router>
       </header>

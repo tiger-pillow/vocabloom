@@ -81,7 +81,7 @@ function CardsTableRow({ card, decks, update_card }: { card: INounCard | IVerbCa
             <div className='col-span-3 break-words border'>
                 <div className='text-blue-800'>{card.examples.map((w) => { return (<span className='pr-1 inline-block'>{w[0]}</span>) })}</div>
                 
-                <div className=''>{card.examplesTranslation}</div>
+                <div className=''>{card.examples_translation}</div>
                 
                 </div>
             <div className='col-span-3 border'>

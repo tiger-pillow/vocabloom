@@ -36,7 +36,7 @@ export async function updateCardStatus(req: any, res: any) {
                 motherCard.decks.push([deck.deck_name, req.body.deck_id])
                 motherCard.markModified('decks');
                 deck.mothercards.push(motherCard._id)
-                deck.decksize += 1
+                deck.deck_size += 1
                 deck.markModified('mothercards')
                 await deck.save()
                 await motherCard.save();
@@ -50,7 +50,7 @@ export async function updateCardStatus(req: any, res: any) {
             if (motherCard && deck) {
                 motherCard.decks = motherCard.decks.filter((deck:any) => deck[1] !== req.body.deck_id)
                 deck.mothercards = deck.mothercards.filter((card_id: any) => card_id.toString() !== req.body.card._id)
-                deck.decksize -= 1
+                deck.deck_size -= 1
                 deck.markModified('mothercards')
                 await deck.save()
                 await motherCard.save()

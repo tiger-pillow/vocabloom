@@ -14,7 +14,7 @@ export interface INounCard extends ICard {
     definition: string,
     definitionFr?: string,
     examples: Array<[string, string]>,
-    examplesTranslation?: string,
+    examples_translation?: string,
 }
 
 
@@ -30,6 +30,6 @@ export interface IVerbCard extends ICard{
     word: string,
     definition: string,
     examples: Array<[string, string]>,
-    examplesTranslation?: string,
+    examples_translation?: string,
 
 }

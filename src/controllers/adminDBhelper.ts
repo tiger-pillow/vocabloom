@@ -28,14 +28,14 @@ export async function getMotherCardByType(type: string, status: string = "all", 
     try {
         switch (type) {
             case "noun":
-                data = await NounCard.find().sort({ time_added: sort as SortOrder });
+                data = await NounCard.find().sort({ time_created: sort as SortOrder });
                 break;
 
             case "verb":
-                data = await VerbCard.find().sort({ time_added: sort as SortOrder });
+                data = await VerbCard.find().sort({ time_created: sort as SortOrder });
                 break;
             case "conjugate": 
-                data = await ConjugateCard.find().sort({ time_added: sort as SortOrder });
+                data = await ConjugateCard.find().sort({ time_created: sort as SortOrder });
             default:
                 break;
         }

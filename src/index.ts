@@ -8,7 +8,6 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import {algo} from './algo.js'
 import adminRouter from './routes/adminRoutes.js'
-import sessionRouter from './routes/sessionRoutes.js';
 import { generatorParameters, fsrs } from 'ts-fsrs';
 
 dotenv.config();
@@ -32,7 +31,6 @@ app.use(cors({
 
 app.use("/", homeRouter);
 app.use("/", adminRouter);
-app.use("/", sessionRouter)
 
 if (process.env.NODE_ENV == "development" && process.env.DB_URI_VOCABLOOM) {
     console.log('Development mode: Connecting to MongoDB');

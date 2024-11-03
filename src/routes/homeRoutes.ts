@@ -1,18 +1,14 @@
 import { Router } from 'express';
-import { addEmail } from '../controllers/userControllers.js';
-import {NounCard, VerbCard, ConjugateCard} from "../schemas/motherCardSchema.js";
+import { joinWaitlist, signUp } from '../controllers/userControllers.js';
 const homeRouter = Router();
 
+import { getSessionCard } from '../controllers/sessionControllers.js'
 
-homeRouter.post("/waitlist", async (req, res) => {
-    console.log("waitlist submitted", req.body);
-    addEmail({email: req.body.email}).then((res) => {
-        console.log("added email route level")
-    }).then(()=>{
-        res.sendStatus(200)
-    })
-})
 
-homeRouter.post("/api/register", async (req, res) => {})
+homeRouter.post("/getSessionCard", getSessionCard);
+
+homeRouter.post("/waitlist", joinWaitlist)
+
+homeRouter.post("/signup", signUp)
 
 export default homeRouter;

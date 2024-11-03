@@ -1,34 +1,16 @@
 import EmailSchema from "../schemas/emailSchema.js";
-import User from '../schemas/userSchema.js'
-import bcrypt from 'bcrypt';
+import { User } from "../schemas/deckSchema.js";
+// import bcrypt from 'bcrypt';
 
 
-export async function addEmail(content: {email: string}){
+export async function joinWaitlist(req: any, res: any){
     const newEmail = new EmailSchema({
-        email: content.email
+        email: req.body.email
     })
     await newEmail?.save()
-    console.log("email saved successfully ", content.email)
+    console.log("email saved successfully ", req.body.email)
 }
 
-
-export async function hashPassword(password: string): Promise<string> {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    return hashedPassword;
-}
-
-export async function addUser(content: {
-    username: string, 
-    email: string, 
-    password: string
-}) { 
-    const newUser = new User({
-        username: content.username, 
-        email: content.email, 
-        password: content.password,
-    })
-
-    await newUser?.save()
-    console.log("user saved ")
+export async function signUp(req: any, res: any){
+    
 }

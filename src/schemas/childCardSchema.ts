@@ -5,7 +5,7 @@ export interface IChildCard {
     mothercard_type: string
 }
 
-const ChildCard = new mongoose.Schema({
+const ChildCardSchema = new mongoose.Schema({
     mothercard_id: { type: mongoose.Types.ObjectId, required: true},
     mothercard_type: { type: String, required: true}, 
     user_id: { type: mongoose.Types.ObjectId, required: true}, 
@@ -26,4 +26,4 @@ const ChildCard = new mongoose.Schema({
     }
     
 })
-export default mongoose.model("ChildCard", ChildCard);
+export default mongoose.model("ChildCard", ChildCardSchema);

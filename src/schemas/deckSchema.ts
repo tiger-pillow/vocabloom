@@ -5,10 +5,10 @@ const DeckSchema = new mongoose.Schema({
     deck_description: {type: String}, 
     decksize: {type: Number}, // number of cards 
     usercount: {type: Number},
-    mothercards: {type: [Types.ObjectId]}
+    mothercards: {type: [Types.ObjectId]},
+    time_created: {type: Date, default: Date.now}
 })
 
-export const Deck = mongoose.model("Deck", DeckSchema)
 
 const SessionLogSchema = new mongoose.Schema({
     user_id: {type: Types.ObjectId}, 
@@ -19,4 +19,27 @@ const SessionLogSchema = new mongoose.Schema({
 
 })
 
-const SessionLog = mongoose.model("SessionLog", SessionLogSchema)
+const UserSchema = new mongoose.Schema({
+    username: { type: String },
+    email: { type: String },
+    password: { type: String },
+    time_created: { type: Date, default: Date.now }, // register time
+    // payment_details: {type: String}, 
+    // last_login_time: {type: Date, default: Date.now}
+    daily_limit: { type: Number },
+    new_word_limit: { type: Number },
+    decks_studying: {type: [
+        {
+            deck_id: {type: Types.ObjectId}, 
+            deck_name: {type: String}, 
+            time_started: {type: Date}, 
+            time_last_studied: {type: Date}, 
+            progress_index: {type: Number} // the next new card index
+            
+        }
+    ]}
+})
+
+export const User = mongoose.model("User", UserSchema);
+export const Deck = mongoose.model("Deck", DeckSchema)
+export const SessionLog = mongoose.model("SessionLog", SessionLogSchema)
