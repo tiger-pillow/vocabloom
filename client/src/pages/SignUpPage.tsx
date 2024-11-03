@@ -23,7 +23,7 @@ export default function SignUpPage(){
                 </span>
             </div>
             <ChooseRoutine />
-            <div className="text-center px-2 py-2">
+            <div className="text-center px-2 py-2 mt-8">
                 <span className="inline-block bg-yellow-500 border border-yellow-300 text-black text-xl font-semibold px-3 py-1 rounded-md shadow-md">
                     Let's go!
                 </span>
@@ -65,69 +65,37 @@ function SignUp(){
 }
 
 function ChooseDeck(){
+    const DeckCard = (deck: {deck_name: string, deck_description: string, deck_size: number}) => {
+
+        return (
+            <div className="border rounded-lg shadow-sm">
+                <button className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                    <span className="font-medium">{deck.deck_name}</span>
+                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div className="px-4 py-3 border-t">
+                    <p className="text-gray-600">{deck.deck_description}</p>
+                    <div className="mt-2 text-sm text-gray-500">
+                        <span>Deck size: &nbsp;{deck.deck_size}</span>
+                    </div>
+                </div>
+            </div>
+        )
+        
+    }
+
+
     return (
         <div>
             <div className="container mx-auto p-4">
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-h-[400px] overflow-y-auto">
-                    <div className="border rounded-lg shadow-sm">
-                        <button className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
-                            <span className="font-medium">5 cards/day</span>
-                            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div className="px-4 py-3 border-t">
-                            <p className="text-gray-600">Perfect for busy schedules. Learn at a steady pace.</p>
-                            <div className="mt-2 text-sm text-gray-500">
-                                <span>Time: ~10 min/day</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="border rounded-lg shadow-sm">
-                        <button className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
-                            <span className="font-medium">10 cards/day</span>
-                            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div className="px-4 py-3 border-t">
-                            <p className="text-gray-600">Balanced approach for consistent progress.</p>
-                            <div className="mt-2 text-sm text-gray-500">
-                                <span>Time: ~20 min/day</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="border rounded-lg shadow-sm">
-                        <button className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
-                            <span className="font-medium">15 cards/day</span>
-                            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div className="px-4 py-3 border-t">
-                            <p className="text-gray-600">For dedicated learners seeking faster results.</p>
-                            <div className="mt-2 text-sm text-gray-500">
-                                <span>Time: ~30 min/day</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="border rounded-lg shadow-sm">
-                        <button className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
-                            <span className="font-medium">20 cards/day</span>
-                            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div className="px-4 py-3 border-t">
-                            <p className="text-gray-600">Intensive learning for rapid vocabulary growth.</p>
-                            <div className="mt-2 text-sm text-gray-500">
-                                <span>Time: ~40 min/day</span>
-                            </div>
-                        </div>
-                    </div>
+                    <DeckCard 
+                        deck_name="Dating Pack" 
+                        deck_description="Flirt with your beau/belle in French" 
+                        deck_size={50}
+                    />
                 </div>
             </div>
         </div>
@@ -138,7 +106,44 @@ function ChooseDeck(){
 function ChooseRoutine(){
     return (
         <div>
-            <h1>Choose Routine</h1>
+            <div className="container mx-auto p-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <div className="w-1/2 flex flex-col space-y-2">
+                        <label className="text-sm font-medium text-gray-700">
+                            New cards per day
+                        </label>
+                        <input
+                            type="range"
+                            min="3"
+                            max="50"
+                            defaultValue="10"
+                            className="w-full h-2 bg-yellow-200 rounded-lg appearance-none cursor-pointer accent-yellow-500"
+                        />
+                        <div className="flex justify-between text-xs text-gray-500">
+                            <span>3</span>
+                            <span>50</span>
+                        </div>
+                    </div>
+
+                    <div className="w-1/2 flex flex-col space-y-2">
+                        <label className="text-sm font-medium text-gray-700">
+                            Total Review Cards
+                        </label>
+                        <input
+                            type="range"
+                            min="25"
+                            max="400"
+                            defaultValue="100"
+                            className="w-full h-2 bg-yellow-200 rounded-lg appearance-none cursor-pointer accent-yellow-500"
+                        />
+                        <div className="flex justify-between text-xs text-gray-500">
+                            <span>25</span>
+                            <span>400</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
