@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {ICard, INounCard, IVerbCard} from "../../interfaces/cardsInterface";
+import {ICard, INounCard, IVerbCard, IDeck} from "../../interfaces/cardsInterface";
 import axiosConfig from "../../axiosConfig";
 import NavBar from '../../components/NavBar';
 
@@ -22,7 +22,7 @@ function CardsTable(){
                     "requestType": type
                 });
                 let decksResponse = await axiosConfig.get("/getDecks")
-                setDecks(decksResponse.data)
+                setDecks(decksResponse.data.map((deck: IDeck) => [deck.deck_name, deck._id]))
                 setCards(response.data)
             } catch (err) {
                 console.error(err);

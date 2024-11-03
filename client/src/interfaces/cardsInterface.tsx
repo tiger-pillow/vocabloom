@@ -1,4 +1,13 @@
 
+export interface IDeck {
+    _id: string,
+    deck_name: string,
+    deck_description: string,
+    deck_size: number,
+    usercount: number,
+    mothercards: Array<string> // ?? might not need
+}
+
 export interface ICard {
     // cardID: number,
     type: string,

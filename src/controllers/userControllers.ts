@@ -12,5 +12,8 @@ export async function joinWaitlist(req: any, res: any){
 }
 
 export async function signUp(req: any, res: any){
-    
+    console.log("signup req: ", req.body)
+    let newUser = new User(req.body)
+    await newUser.save()
+    console.log("new user saved: ", newUser)
 }
