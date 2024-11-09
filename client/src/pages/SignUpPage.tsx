@@ -29,7 +29,16 @@ export default function SignUpPage(){
 
 
     const submitUserForm = async () => {
-        console.log("user form: ", userForm)
+        if(userForm.username === "" || userForm.email === "" || userForm.password === "" || 
+            userForm.password !== userForm.confirmPassword
+        ) {
+            alert ('Please double check account information')
+            return
+        } else if (userForm.deck_id === ""){
+            alert('Please select a deck of cards')
+            return 
+        } 
+
         try {
             let response = await axiosConfig.post("/signup", userForm)
             console.log("response: ", response)

@@ -1,4 +1,5 @@
 import mongoose, { mongo, SortOrder, Types } from "mongoose";
+import bcrypt from "bcrypt";
 
 const DeckSchema = new mongoose.Schema({
     deck_name: {type: String}, 
@@ -20,9 +21,9 @@ const SessionLogSchema = new mongoose.Schema({
 })
 
 const UserSchema = new mongoose.Schema({
-    username: { type: String },
-    email: { type: String },
-    password: { type: String },
+    username: { type: String, required: true , trim: true},
+    email: { type: String, required: true, trim: true, unique: true, lowercase: true},
+    password: { type: String, required: true, trim: true, select: false},
     time_created: { type: Date, default: Date.now }, // register time
     // payment_details: {type: String}, 
     // last_login_time: {type: Date, default: Date.now}
@@ -39,6 +40,21 @@ const UserSchema = new mongoose.Schema({
         }
     ]}
 })
+
+// Hash password before saving, never save plain password
+UserSchema.pre("save", async function(next) {
+    if (! this.isModified("password")){
+        next();
+    }
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+})
+
+//Compare password method
+UserSchema.methods.comparePassword = async function (enteredPassword: string) {
+    return await bcrypt.compare(enteredPassword, this.password); 
+}
+
 
 export const User = mongoose.model("User", UserSchema);
 export const Deck = mongoose.model("Deck", DeckSchema)
