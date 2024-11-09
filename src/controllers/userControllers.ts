@@ -61,3 +61,57 @@ export async function signUp(req: any, res: any) {
 
 }
    
+export async function login(req: any, res: any) {
+    try { 
+        console.log("login attempt with:", req.body);
+        if (!req.body.email || !req.body.password) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide an email and password"
+            });
+        }
+
+        const user = await User.findOne({ email: req.body.email }).select("+password");
+        console.log("user found:", user)
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials"
+            });
+        }
+
+        const isMatch = await user.comparePassword(req.body.password);
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials"
+            });
+        }
+
+        const token = generateToken(user._id);
+        const options = {
+            expires: new Date(Date.now() + Number(process.env.JWT_EXPIRE) * 3600 * 1000),
+            httpOnly: true,
+            secure: false,
+        }
+
+        res.status(200).cookie("token", token, options).json({
+            success: true, 
+            message: "login success",
+            token, 
+            user: {
+                _id: user._id, 
+                username: user.username, 
+                email: user.email
+            }
+        });
+        console.log("backend login success")
+        
+    } catch (error) {
+        res.status(500).json({
+            success: false, 
+            message: "Server error"
+        })
+    }
+
+}

@@ -8,6 +8,7 @@ import AdminDeckPage from './pages/AdminPages/AdminDeckPage';
 import SignUpPage from './pages/SignUpPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
+import LoginPage from './pages/LoginPage';
 
 function App() {
   return (
@@ -19,10 +20,11 @@ function App() {
             <Route path= "/" element = {<WaitlistPage></WaitlistPage>}></Route>
               <Route path="/cards" element={<HomePage />} />      {/* Home Route */}
               <Route path="/cards2" element={<ProtectedRoute>  <CardPage2 /></ProtectedRoute>} />
-              <Route path="/admin/cards" element={<AdminPage />} /> {/* Admin Route */}
               <Route path= "/addcard" element = {<AddCardPage/>} />
-              <Route path="/admin/deck" element={<AdminDeckPage />} />
               <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/admin/deck" element={<AdminDeckPage />} />
+              <Route path="/admin/cards" element={<AdminPage />} /> {/* Admin Route */}
             </Routes>
           </Router>
         </AuthProvider>

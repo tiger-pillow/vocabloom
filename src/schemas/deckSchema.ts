@@ -55,7 +55,22 @@ UserSchema.methods.comparePassword = async function (enteredPassword: string) {
     return await bcrypt.compare(enteredPassword, this.password); 
 }
 
+interface UserDocument extends mongoose.Document {
+    comparePassword: (enteredPassword: string) => Promise<boolean>;
+    username: string;
+    email: string;
+    password: string;
+    time_created: Date;
+    daily_limit: number;
+    new_word_limit: number;
+    decks_studying: [{
+        deck_id: Types.ObjectId;
+        deck_name: string;
+    }]
+}
 
-export const User = mongoose.model("User", UserSchema);
+
+
+export const User = mongoose.model<UserDocument>("User", UserSchema);
 export const Deck = mongoose.model("Deck", DeckSchema)
 export const SessionLog = mongoose.model("SessionLog", SessionLogSchema)
