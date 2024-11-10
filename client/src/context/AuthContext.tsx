@@ -5,6 +5,7 @@ interface AuthContextType {
     user_id: string | null;
     error: string | boolean;
     loading: boolean;
+    role: string;
     login: (email: string, password: string) => Promise< boolean>;
     signup: (userForm: any) => Promise< boolean>;
 }
@@ -13,6 +14,7 @@ const AuthContext = createContext<AuthContextType>({
     user_id: null,
     error: false,
     loading: true,
+    role: "admin", // notloggedin, user, admin
     login: async (email: string, password: string) => {return false},
     signup: async (userForm: any) => {return false}
 });
@@ -21,7 +23,7 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
     const [user_id, setUserID] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | boolean>(false);
-
+    const [role, setRole] = useState<string>("admin");
     // check auth status on mount
     useEffect(() => {
         const checkAuth = async () => {
@@ -91,6 +93,7 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
             user_id, 
             error,
             loading,
+            role,
             login,
             signup
         }}>

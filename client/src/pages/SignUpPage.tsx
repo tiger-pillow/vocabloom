@@ -1,4 +1,3 @@
-import NavBar from "../components/NavBar"
 import { useEffect, useState } from "react"
 import axiosConfig from "../axiosConfig";
 import { IDeck } from "../interfaces/cardsInterface";
@@ -64,7 +63,6 @@ export default function SignUpPage(){
  
     return (
         <div>
-            <NavBar />
             <div className="container mx-auto p-4">
                 <span className="text-left inline-block bg-white border border-yellow-500 text-black text-sm font-semibold px-3 py-1 rounded-md shadow-md">
                     Step 1: Create an account

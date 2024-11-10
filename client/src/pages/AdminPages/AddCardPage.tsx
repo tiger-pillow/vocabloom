@@ -2,7 +2,6 @@ import { createContext } from "react";
 import { useState, useEffect } from "react";
 import { ICard } from "../../interfaces/cardsInterface";
 import axiosConfig from "../../axiosConfig";
-import NavBar from "../../components/NavBar";
 
 export default function AddCardPage() {
     const [word, setWord] = useState(String)
@@ -56,7 +55,6 @@ export default function AddCardPage() {
 
     return (
         <div>
-            <NavBar></NavBar>
             <div className="text-lg m-2 w-full text-center ">&nbsp;&nbsp;&nbsp;&nbsp;
                 {status === 200 ? <span> ✅ Saved succesfully </span> : status === 501 ? <span > ❌ didn't save </span> : <span>Inputting..</span>}
 

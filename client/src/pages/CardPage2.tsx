@@ -2,7 +2,6 @@ import { createContext } from "react";
 import { useState, useEffect } from "react";
 import { ICard } from "../interfaces/cardsInterface";
 import { CardComponent } from "../components/cards/CardComponents";
-import NavBar from "../components/NavBar";
 import { ProgressBar } from "../components/cards/ProgressBar";
 import axiosConfig from "../axiosConfig";
 
@@ -45,7 +44,6 @@ export default function CardPage2() {
 
     return (
         <div >
-            <NavBar></NavBar>
             <div className="mx-auto p-6 max-w-4xl">
                 <ProgressBar totalCardCount={20} cardIndex={5} />
                 {

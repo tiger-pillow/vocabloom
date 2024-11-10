@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {ICard, INounCard, IVerbCard, IDeck} from "../../interfaces/cardsInterface";
 import axiosConfig from "../../axiosConfig";
-import NavBar from '../../components/NavBar';
 
 export default function AdminPage() {
 return (
     <div>
-        <NavBar></NavBar>
         <CardsTable />
     </div>
 )

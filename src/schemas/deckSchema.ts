@@ -29,6 +29,7 @@ const UserSchema = new mongoose.Schema({
     // last_login_time: {type: Date, default: Date.now}
     daily_limit: { type: Number },
     new_word_limit: { type: Number },
+    role: { type: String, default: "user", enum: ["user", "admin", "superadmin"] },
     decks_studying: {type: [
         {
             deck_id: {type: Types.ObjectId}, 
