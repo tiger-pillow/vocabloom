@@ -9,10 +9,12 @@ import { fileURLToPath } from 'url';
 import {algo} from './algo.js'
 import adminRouter from './routes/adminRoutes.js'
 import { generatorParameters, fsrs } from 'ts-fsrs';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 const app = express();
 app.use(express.json())
+app.use(cookieParser())
 const router = express.Router();
 const PORT = process.env.PORT || 8000;
 

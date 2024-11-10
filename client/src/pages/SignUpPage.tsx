@@ -2,8 +2,11 @@ import NavBar from "../components/NavBar"
 import { useEffect, useState } from "react"
 import axiosConfig from "../axiosConfig";
 import { IDeck } from "../interfaces/cardsInterface";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function SignUpPage(){
+    const { signup } = useAuth();
     const [decks, setDecks] = useState<IDeck[]>()
     const [userForm, setUserForm] = useState({
         username: '',
@@ -14,7 +17,7 @@ export default function SignUpPage(){
         new_cards_per_day: 10,
         total_review_cards: 100
     });
-
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -29,6 +32,7 @@ export default function SignUpPage(){
 
 
     const submitUserForm = async () => {
+        // check input
         if(userForm.username === "" || userForm.email === "" || userForm.password === "" || 
             userForm.password !== userForm.confirmPassword
         ) {
@@ -38,15 +42,17 @@ export default function SignUpPage(){
             alert('Please select a deck of cards')
             return 
         } 
-
+        // signup
         try {
-            let response = await axiosConfig.post("/signup", userForm)
-            console.log("response: ", response)
+            let response = await signup(userForm)
+            if (response) {
+                navigate('/cards2')
+            } else {
+                alert("signup error")
+            }
         } catch (err) {
             console.error(err)
         }
-
-
     }
 
     const changeUserForm = (value: any) => {

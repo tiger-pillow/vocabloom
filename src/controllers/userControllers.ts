@@ -34,7 +34,7 @@ export async function signUp(req: any, res: any) {
         // generate token
         const token = generateToken(user._id);
         const options = {
-            expires: new Date(Date.now() + Number(process.env.JWT_EXPIRE) * 3600 * 1000),
+            expires: new Date(Date.now() + Number(process.env.JWT_COOKIE_EXPIRE) * 3600 * 1000),
             httpOnly: true,
             secure: false,
         }
@@ -46,7 +46,7 @@ export async function signUp(req: any, res: any) {
             success: true, 
             token, 
             user: {
-                id: user._id, 
+                _id: user._id, 
                 username: user.username, 
                 email: user.email
             }
@@ -90,9 +90,12 @@ export async function login(req: any, res: any) {
 
         const token = generateToken(user._id);
         const options = {
-            expires: new Date(Date.now() + Number(process.env.JWT_EXPIRE) * 3600 * 1000),
-            httpOnly: true,
+            expires: new Date(Date.now() + Number(process.env.JWT_COOKIE_EXPIRE) * 3600 * 1000),
+            httpOnly: false,
             secure: false,
+        }
+        if (process.env.NODE_ENV === 'production') {
+            options.secure = true;
         }
 
         res.status(200).cookie("token", token, options).json({
@@ -114,4 +117,28 @@ export async function login(req: any, res: any) {
         })
     }
 
+}
+
+export async function me(req: any, res: any) {
+    // get current user
+    console.log("me req.user: ", req.user)
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        res.status(200).json({
+            success: true,
+            user: {
+                _id: user._id, 
+                username: user.username, 
+                email: user.email
+            }
+        })
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error" });
+    }
 }

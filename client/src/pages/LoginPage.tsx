@@ -1,22 +1,21 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
-    const { login, error, user_id } = useAuth();
+    const { login } = useAuth();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
    
-    // Can I use useCallback here?
     const handleSubmit = async () => {
         console.log("login attempt with:", { email, password });
         const returnedRes = await login(email, password);
         if (returnedRes) {
             navigate('/');
         } else {
-            alert("invalid credentials");
+            alert("login error");
         }
     };
 

@@ -6,13 +6,15 @@ interface AuthContextType {
     error: string | boolean;
     loading: boolean;
     login: (email: string, password: string) => Promise< boolean>;
+    signup: (userForm: any) => Promise< boolean>;
 }
 
 const AuthContext = createContext<AuthContextType>({
     user_id: null,
     error: false,
     loading: true,
-    login: async (email: string, password: string) => {return false}
+    login: async (email: string, password: string) => {return false},
+    signup: async (userForm: any) => {return false}
 });
 
 export const AuthProvider = ({children}:{children: ReactNode}) => {
@@ -24,8 +26,10 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const res = await axiosConfig.get('/me');
-                setUserID(res.data.user_id);
+                const res = await axiosConfig.get('/me', {
+                    withCredentials: true
+                });
+                setUserID(res.data.user._id);
             } catch (err) {
                 setUserID(null);
             } finally {
@@ -45,12 +49,9 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
             }, {
                 withCredentials: true
             });
-
             if (res.status === 200 && res.data.success) {
-                await Promise.all([
-                    setUserID(res.data.user._id),
-                    setError(res.data.message)
-                ]);
+                setUserID(res.data.user._id)
+                setError(res.data.message)
                 return true
             } else {
                 setError(res.data.message)
@@ -64,13 +65,34 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
         }
     };
 
+    const signup = async (userForm: any) => {
+        try{
+            setLoading(true);
+            const res = await axiosConfig.post("/signup", userForm);
+            if (res.status === 201 && res.data.success) {
+                setUserID(res.data.user._id)
+                setError(false)
+                return true
+            } else {
+                setError(res.data.message)
+                return false
+            }
+        } catch (err: any) {
+            setError(err.response?.data?.message || "An error occurred")
+            return false
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <AuthContext.Provider
         value = {{
             user_id, 
             error,
             loading,
-            login
+            login,
+            signup
         }}>
             {children}
         </AuthContext.Provider>
