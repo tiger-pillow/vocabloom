@@ -5,14 +5,14 @@ interface AuthContextType {
     user_id: string | null;
     error: string | boolean;
     loading: boolean;
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise< boolean>;
 }
 
 const AuthContext = createContext<AuthContextType>({
     user_id: null,
     error: false,
     loading: true,
-    login: async (email: string, password: string) => {}
+    login: async (email: string, password: string) => {return false}
 });
 
 export const AuthProvider = ({children}:{children: ReactNode}) => {
@@ -25,7 +25,6 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
         const checkAuth = async () => {
             try {
                 const res = await axiosConfig.get('/me');
-                console.log("auth provider useEffect", res.data);
                 setUserID(res.data.user_id);
             } catch (err) {
                 setUserID(null);
@@ -33,13 +32,13 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
                 setLoading(false);
             }
         };
-
         checkAuth();
     }, []);
 
 
     const login = async(email:string, password:string) => {
         try{
+            setLoading(true);
             const res = await axiosConfig.post("/login", {
                 email, 
                 password
@@ -47,19 +46,21 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
                 withCredentials: true
             });
 
-            console.log("useAuth login res", res);
             if (res.status === 200 && res.data.success) {
                 await Promise.all([
                     setUserID(res.data.user._id),
                     setError(res.data.message)
                 ]);
+                return true
             } else {
-                await Promise.all([
-                    setError(res.data.message)
-                ])
+                setError(res.data.message)
+                return false
             }
         } catch (err: any) {
             setError(err.response?.data?.message || "An error occurred")
+            return false
+        } finally {
+            setLoading(false);
         }
     };
 
