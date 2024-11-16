@@ -3,6 +3,7 @@ import { ICard } from "../interfaces/cardsInterface";
 import { CardComponent } from "../components/cards/CardComponents";
 import { ProgressBar } from "../components/cards/ProgressBar";
 import axiosConfig from "../axiosConfig";
+import { time } from "console";
 
 const SHORTCUT_DICT = {
     "Digit1": "Hard",
@@ -14,6 +15,8 @@ const SHORTCUT_DICT = {
 export default function CardPage2() {
     const [motherCard, setMotherCard] = useState<ICard>()
     const [id, setID] = useState(String)
+    const timezone_offset = - new Date().getTimezoneOffset() / 60;
+
 
     const onFeedback = async (feedback: string) => {
         // send response to server, and get new card 
@@ -29,7 +32,12 @@ export default function CardPage2() {
     useEffect(()=>{
         const fetchData = async() => {
             try {
-                const response = await axiosConfig.post("/getSessionCard");
+                const response = await axiosConfig.post("/getSessionCard",{
+                    timezone_offset: timezone_offset
+                }, {
+                    withCredentials: true,
+                });
+
                 setMotherCard(response.data.motherCard as ICard)
                 setID(response.data.childCard_id)
                 console.log("card is ", response.data)

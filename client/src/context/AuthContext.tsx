@@ -30,11 +30,12 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
     const [error, setError] = useState<string | boolean>(false);
     const [role, setRole] = useState<string>("guest");
     // check auth status on mount
+    
     useEffect(() => {
         const checkAuth = async () => {
             try {
                 const res = await axiosConfig.get('/me', {
-                    withCredentials: true
+                    withCredentials: true,
                 });
                 setUserID(res.data.user._id);
                 setUsername(res.data.user.username);

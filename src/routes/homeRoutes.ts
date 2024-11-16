@@ -16,7 +16,7 @@ homeRouter.get("/getDecks", getDecks)
 
 
 
-homeRouter.post("/getSessionCard", getSessionCard);
+homeRouter.post("/getSessionCard", protect, getSessionCard);
 homeRouter.post("/waitlist", joinWaitlist)
 homeRouter.post("/signup", signUp)
 homeRouter.post("/login", login)

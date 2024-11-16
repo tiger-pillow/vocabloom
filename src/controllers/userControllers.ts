@@ -153,8 +153,6 @@ export async function login(req: any, res: any) {
 
 export async function me(req: any, res: any) {
     // get current user
-    console.log("me route hit req user: ", req.user)
-
     try {
         res.status(200).json({ success: true, user: req.user })
       

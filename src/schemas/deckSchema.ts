@@ -11,13 +11,16 @@ const DeckSchema = new mongoose.Schema({
 })
 
 
+// daily log of a user's session
 const SessionLogSchema = new mongoose.Schema({
     user_id: {type: Types.ObjectId}, 
-    time_created: {type: Date, default: Date.now}, 
-    deck_id: {type: Types.ObjectId}, // could be an array, if at the end of one deck and beginning of another deck
-    card_logs: {type: [String]}, 
-    time_finished: {type: Date},
+    time_created: {type: Date, default: Date.now}, // utc
+    time_offset: {type: Number}, // timezone offset
+    time_local: {type: Date}, // local time
 
+    new_card_count: {type: Number},
+    total_card_count: {type: Number},
+    card_logs: {type: [String]}, 
 })
 
 export const ChildDeckSchema = ({

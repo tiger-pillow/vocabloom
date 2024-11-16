@@ -13,7 +13,7 @@ function LoginPage() {
         console.log("login attempt with:", { email, password });
         const returnedRes = await login(email, password);
         if (returnedRes) {
-            navigate('/cards2');
+            navigate('/cards');
         } else {
             alert("login error");
         }
