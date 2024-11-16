@@ -6,7 +6,6 @@ import cors from 'cors';
 import homeRouter from './routes/homeRoutes.js'; // have to import with js
 import path from "path";
 import { fileURLToPath } from 'url';
-import {algo} from './algo.js'
 import adminRouter from './routes/adminRoutes.js'
 import { generatorParameters, fsrs } from 'ts-fsrs';
 import cookieParser from 'cookie-parser';
