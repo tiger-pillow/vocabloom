@@ -3,21 +3,23 @@ import { deleteMotherCard, getMotherCardByType, getMotherCardById } from "./admi
 import { Deck } from "../schemas/deckSchema.js";
 
 export async function getCardsByTypeStatus (req:any, res: any) {
-    var data;
-
     try {
+        var data;
         data = await getMotherCardByType(req.body.requestType)
         res.send(JSON.stringify(data))
     } catch (error) {
-        console.error('Error retrieving VerbCards:', error);
-        throw new Error('Could not fetch verb cards');
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        })
     }
 };
 
 export async function updateCardStatus(req: any, res: any) {
-    console.log("called updateCardStatus action is ", req.body.action)
-    let motherCard, deck
-    switch (req.body.action) {
+    try {
+        console.log("called updateCardStatus action is ", req.body.action)
+        let motherCard, deck
+        switch (req.body.action) {
         case "delete": 
             await deleteMotherCard(req.body.card)
             break;
@@ -60,14 +62,20 @@ export async function updateCardStatus(req: any, res: any) {
             break;
         }
     let newdata = await getMotherCardByType(req.body.requestType)
-    res.send(JSON.stringify(newdata))
-    
+        res.send(JSON.stringify(newdata))
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        })
+    }
 }
 
 export async function addMotherCard(req: any, res: any) { 
-    let newCard
-    let content = req.body
-    if (content.type === "verb") {
+    try {
+        let newCard
+        let content = req.body
+        if (content.type === "verb") {
         newCard = new VerbCard({
             type: "verb",
             word: content.word,
@@ -88,31 +96,46 @@ export async function addMotherCard(req: any, res: any) {
             examplesTranslation: content.examplesTranslation,
         })
     }
-    try {
         await newCard?.save()
         return 200
     } catch (err) {
-        console.log("unable to save card ", err)
-        return 501
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        })
     }
 }
 
 
 export async function getDecks(req: any, res: any) {
-    let decks = await Deck.find()
-    res.send(JSON.stringify(decks))
+    try {
+        let decks = await Deck.find()
+        res.send(JSON.stringify(decks))
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        })
+    }
 }
 
 
 export async function createDeck(req: any, res: any) {
-    let newDeck = new Deck({
-        deck_name: req.body.deck_name,
+    try { 
+        let newDeck = new Deck({
+            deck_name: req.body.deck_name,
         deck_description: req.body.deck_description,
         decksize: 0,
         usercount: 0,
         mothercards: []
     })
-    await newDeck.save()
-    res.send(JSON.stringify(newDeck))
+        await newDeck.save()
+        res.send(JSON.stringify(newDeck))
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        })
+    }
 }
-
+        

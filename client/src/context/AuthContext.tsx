@@ -3,6 +3,7 @@ import axiosConfig from '../axiosConfig';
 
 interface AuthContextType {
     user_id: string | null;
+    username: string | null;
     error: string | boolean;
     loading: boolean;
     role: string;
@@ -12,18 +13,20 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
     user_id: null,
-    error: false,
+    username: null,
+    error: false,   
     loading: true,
-    role: "admin", // notloggedin, user, admin
+    role: "notloggedin", // notloggedin, user, admin
     login: async (email: string, password: string) => {return false},
     signup: async (userForm: any) => {return false}
 });
 
 export const AuthProvider = ({children}:{children: ReactNode}) => {
     const [user_id, setUserID] = useState<string | null>(null);
+    const [username, setUsername] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | boolean>(false);
-    const [role, setRole] = useState<string>("admin");
+    const [role, setRole] = useState<string>("notloggedin");
     // check auth status on mount
     useEffect(() => {
         const checkAuth = async () => {
@@ -32,6 +35,8 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
                     withCredentials: true
                 });
                 setUserID(res.data.user._id);
+                setUsername(res.data.user.username);
+                setRole(res.data.user.role);
             } catch (err) {
                 setUserID(null);
             } finally {
@@ -94,6 +99,7 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
             error,
             loading,
             role,
+            username,
             login,
             signup
         }}>

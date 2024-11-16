@@ -3,15 +3,24 @@ import { User } from "../schemas/deckSchema.js";
 import jwt from 'jsonwebtoken';
 
 export async function joinWaitlist(req: any, res: any){
-    const newEmail = new EmailSchema({
-        email: req.body.email
-    })
-    await newEmail?.save()
-    console.log("email saved successfully ", req.body.email)
+    try{
+        const newEmail = new EmailSchema({
+            email: req.body.email
+        })
+        await newEmail?.save()
+        console.log("email saved successfully ", req.body.email)
+    } catch (error) { 
+        console.log("join waitlist error")
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        })
+    }
+    
 }
 
-const generateToken = (id: any) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET as string, {
+const generateToken = (_id: any) => {
+    return jwt.sign({ _id }, process.env.JWT_SECRET as string, {
         expiresIn: process.env.JWT_EXPIRE
     });
 }
@@ -48,6 +57,7 @@ export async function signUp(req: any, res: any) {
             user: {
                 _id: user._id, 
                 username: user.username, 
+                role: user.role,
                 email: user.email
             }
         });
@@ -105,7 +115,8 @@ export async function login(req: any, res: any) {
             user: {
                 _id: user._id, 
                 username: user.username, 
-                email: user.email
+                email: user.email,
+                role: user.role
             }
         });
         console.log("backend login success")
@@ -135,7 +146,8 @@ export async function me(req: any, res: any) {
             user: {
                 _id: user._id, 
                 username: user.username, 
-                email: user.email
+                email: user.email,  
+                role: user.role
             }
         })
     } catch (error) {

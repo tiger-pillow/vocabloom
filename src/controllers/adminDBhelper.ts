@@ -53,8 +53,9 @@ export async function getMotherCardByType(type: string, status: string = "all", 
 }
 
 export async function getMotherCardById(id: Types.ObjectId, type: string){
-    let data 
-    switch (type) {
+    try {
+        let data 
+        switch (type) {
         case "noun": 
             data = await NounCard.findById(id).exec()
             break
@@ -64,6 +65,10 @@ export async function getMotherCardById(id: Types.ObjectId, type: string){
         case "conjugate": 
             data =  await ConjugateCard.findById(id).exec()
             break
+        }
+        return data
+    } catch (error) {
+        console.log("getMotherCardById() error ", error)
+        return null
     }
-    return data
 }

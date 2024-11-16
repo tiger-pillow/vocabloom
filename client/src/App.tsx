@@ -9,8 +9,8 @@ import SignUpPage from './pages/SignUpPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
-import Navbar from './components/NavBarRole';
 import NavbarRoleBased from './components/NavBarRole';
+import DashboardPage from './pages/DashboardPage';
 
 function App() {
   return (
@@ -26,10 +26,11 @@ function App() {
               <Route path="/cards2" element={<ProtectedRoute>  <CardPage2 /></ProtectedRoute>} />
               <Route path="/signup" element={<SignUpPage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
 
-              <Route path="/admin/addcard" element={<AddCardPage />} />
-              <Route path="/admin/deck" element={<AdminDeckPage />} />
-              <Route path="/admin/cards" element={<AdminPage />} /> {/* Admin Route */}
+              <Route path="/admin/addcard" element={<ProtectedRoute><AddCardPage /></ProtectedRoute>} />
+              <Route path="/admin/deck" element={<ProtectedRoute><AdminDeckPage /></ProtectedRoute>} />
+              <Route path="/admin/cards" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} /> {/* Admin Route */}
             </Routes>
         </AuthProvider>
         </Router>

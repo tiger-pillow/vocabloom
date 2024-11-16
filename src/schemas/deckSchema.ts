@@ -64,6 +64,7 @@ interface UserDocument extends mongoose.Document {
     time_created: Date;
     daily_limit: number;
     new_word_limit: number;
+    role: string;
     decks_studying: [{
         deck_id: Types.ObjectId;
         deck_name: string;
