@@ -132,24 +132,21 @@ export async function login(req: any, res: any) {
 
 export async function me(req: any, res: any) {
     // get current user
-    console.log("me req.user: ", req.user)
     try {
-        const user = await User.findById(req.user.id);
-        if (!user) {
-            return res.status(401).json({
-                success: false,
-                message: "User not found"
-            });
-        }
-        res.status(200).json({
-            success: true,
-            user: {
-                _id: user._id, 
-                username: user.username, 
-                email: user.email,  
-                role: user.role
-            }
-        })
+       const token = req.cookies.token
+       if (!token) {
+        return res.status(401).json({ success: false, message: "Not authorized to access this route" });
+       }
+       console.log("me token: ", token)
+       try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as jwt.JwtPayload
+        console.log("me decoded: ", decoded)
+        const user = await User.findById(decoded._id)
+        console.log("me user: ", user)
+        res.status(200).json({ success: true, user })
+       } catch (error) {
+        res.status(401).json({ success: false, message: "Not authorized to access this route" });
+       }
     } catch (error) {
         res.status(500).json({ success: false, message: "Server error" });
     }

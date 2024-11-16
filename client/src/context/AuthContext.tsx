@@ -9,6 +9,7 @@ interface AuthContextType {
     role: string;
     login: (email: string, password: string) => Promise< boolean>;
     signup: (userForm: any) => Promise< boolean>;
+    logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -16,9 +17,10 @@ const AuthContext = createContext<AuthContextType>({
     username: null,
     error: false,   
     loading: true,
-    role: "notloggedin", // notloggedin, user, admin
+    role: "guest", // guest, user, admin
     login: async (email: string, password: string) => {return false},
-    signup: async (userForm: any) => {return false}
+    signup: async (userForm: any) => {return false},
+    logout: async () => {}
 });
 
 export const AuthProvider = ({children}:{children: ReactNode}) => {
@@ -26,7 +28,7 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
     const [username, setUsername] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | boolean>(false);
-    const [role, setRole] = useState<string>("notloggedin");
+    const [role, setRole] = useState<string>("guest");
     // check auth status on mount
     useEffect(() => {
         const checkAuth = async () => {
@@ -58,6 +60,8 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
             });
             if (res.status === 200 && res.data.success) {
                 setUserID(res.data.user._id)
+                setRole(res.data.user.role)
+                setUsername(res.data.user.username)
                 setError(res.data.message)
                 return true
             } else {
@@ -78,6 +82,8 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
             const res = await axiosConfig.post("/signup", userForm);
             if (res.status === 201 && res.data.success) {
                 setUserID(res.data.user._id)
+                setUsername(res.data.user.username)
+                setRole(res.data.user.role)
                 setError(false)
                 return true
             } else {
@@ -92,6 +98,13 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
         }
     }
 
+    const logout = async () => {
+        setUserID(null);
+        setUsername(null);
+        setRole("guest");
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+
     return (
         <AuthContext.Provider
         value = {{
@@ -101,7 +114,8 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
             role,
             username,
             login,
-            signup
+            signup,
+            logout
         }}>
             {children}
         </AuthContext.Provider>
