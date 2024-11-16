@@ -1,4 +1,3 @@
-import { createContext } from "react";
 import { useState, useEffect } from "react";
 import { ICard } from "../interfaces/cardsInterface";
 import { CardComponent } from "../components/cards/CardComponents";
@@ -15,7 +14,6 @@ const SHORTCUT_DICT = {
 export default function CardPage2() {
     const [motherCard, setMotherCard] = useState<ICard>()
     const [id, setID] = useState(String)
-    const [pageStatus, setPageStatus] = useState("")
 
     const onFeedback = async (feedback: string) => {
         // send response to server, and get new card 
@@ -94,19 +92,19 @@ function LearnCard({ card, onFeedback, onStatus }:
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-4 mt-8">
-                            <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
+                            <button className="bg-red-300 hover:bg-red-400 text-white font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
                                 onClick={() => { onFeedback("hard") }}>
                                 Hard
                             </button>
-                            <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
+                            <button className="bg-yellow-200 hover:bg-yellow-300 text-gray-700 font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
                                 onClick={() => { onFeedback("good") }}>
                                 Good
                             </button>
-                            <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
+                            <button className="bg-green-200 hover:bg-green-300 text-gray-700 font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
                                 onClick={() => { onFeedback("easy") }}>
                                 Easy
                             </button>
-                            <button className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
+                            <button className="bg-purple-200 hover:bg-purple-300 text-gray-700 font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
                                 onClick={() => { onFeedback("again") }}>
                                 Again
                             </button>

@@ -1,5 +1,5 @@
 import EmailSchema from "../schemas/emailSchema.js";
-import { User } from "../schemas/deckSchema.js";
+import { User, ChildDeckSchema, Deck } from "../schemas/deckSchema.js";
 import jwt from 'jsonwebtoken';
 
 export async function joinWaitlist(req: any, res: any){
@@ -35,13 +35,34 @@ export async function signUp(req: any, res: any) {
                 message: "User already exists"
             }); 
         }
+
+        console.log("signup req body: ", req.body)
+
+        // initiate a child deck
+        const chosenDeck = await Deck.findById(req.body.deck_id)
+        const childDeck = {
+            deck_id: req.body.deck_id,
+            deck_name: chosenDeck?.deck_name || '',
+            time_started: new Date(Date.now()),
+            progress_index: 0,
+        }
+
         // create new user
-        user = new User(req.body)
-        await user.save()
-        console.log("new user saved: ", user)
+        const newUser = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: req.body.password,
+            daily_limit: req.body.daily_limit,
+            new_cards_limit: req.body.new_cards_limit,
+            current_deck: childDeck,
+            decks: []
+        })
+
+        await newUser.save()
+        console.log("new user saved: ", newUser)
 
         // generate token
-        const token = generateToken(user._id);
+        const token = generateToken(newUser._id);
         const options = {
             expires: new Date(Date.now() + Number(process.env.JWT_COOKIE_EXPIRE) * 3600 * 1000),
             httpOnly: true,
@@ -55,10 +76,10 @@ export async function signUp(req: any, res: any) {
             success: true, 
             token, 
             user: {
-                _id: user._id, 
-                username: user.username, 
-                role: user.role,
-                email: user.email
+                _id: newUser._id, 
+                username: newUser.username, 
+                role: newUser.role,
+                email: newUser.email
             }
         });
     
@@ -132,21 +153,11 @@ export async function login(req: any, res: any) {
 
 export async function me(req: any, res: any) {
     // get current user
+    console.log("me route hit req user: ", req.user)
+
     try {
-       const token = req.cookies.token
-       if (!token) {
-        return res.status(401).json({ success: false, message: "Not authorized to access this route" });
-       }
-       console.log("me token: ", token)
-       try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as jwt.JwtPayload
-        console.log("me decoded: ", decoded)
-        const user = await User.findById(decoded._id)
-        console.log("me user: ", user)
-        res.status(200).json({ success: true, user })
-       } catch (error) {
-        res.status(401).json({ success: false, message: "Not authorized to access this route" });
-       }
+        res.status(200).json({ success: true, user: req.user })
+      
     } catch (error) {
         res.status(500).json({ success: false, message: "Server error" });
     }

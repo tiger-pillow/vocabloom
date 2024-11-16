@@ -20,6 +20,14 @@ const SessionLogSchema = new mongoose.Schema({
 
 })
 
+export const ChildDeckSchema = ({
+    deck_id: {type: Types.ObjectId},
+    deck_name: {type: String},
+    time_started: {type: Date},
+    progress_index: {type: Number},
+    current: {type: Boolean}
+})
+
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true , trim: true},
     email: { type: String, required: true, trim: true, unique: true, lowercase: true},
@@ -28,18 +36,10 @@ const UserSchema = new mongoose.Schema({
     // payment_details: {type: String}, 
     // last_login_time: {type: Date, default: Date.now}
     daily_limit: { type: Number },
-    new_word_limit: { type: Number },
+    new_cards_limit: { type: Number },
     role: { type: String, default: "user", enum: ["user", "admin", "superadmin"] },
-    decks_studying: {type: [
-        {
-            deck_id: {type: Types.ObjectId}, 
-            deck_name: {type: String}, 
-            time_started: {type: Date}, 
-            time_last_studied: {type: Date}, 
-            progress_index: {type: Number} // the next new card index
-            
-        }
-    ]}
+    current_deck: {type: ChildDeckSchema},
+    decks: {type: [ChildDeckSchema]} // all decks the user has studied
 })
 
 // Hash password before saving, never save plain password

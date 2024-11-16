@@ -6,7 +6,6 @@ import cors from 'cors';
 import homeRouter from './routes/homeRoutes.js'; // have to import with js
 import path from "path";
 import { fileURLToPath } from 'url';
-import adminRouter from './routes/adminRoutes.js'
 import { generatorParameters, fsrs } from 'ts-fsrs';
 import cookieParser from 'cookie-parser';
 
@@ -31,7 +30,6 @@ app.use(cors({
 }));
 
 app.use("/", homeRouter);
-app.use("/", adminRouter);
 
 if (process.env.NODE_ENV == "development" && process.env.DB_URI_VOCABLOOM) {
     console.log('Development mode: Connecting to MongoDB');

@@ -13,8 +13,8 @@ export default function SignUpPage(){
         password: '',
         confirmPassword: '',
         deck_id: '', 
-        new_cards_per_day: 10,
-        total_review_cards: 100
+        new_cards_limit: 10,
+        daily_limit: 100
     });
     const navigate = useNavigate();
     useEffect(() => {
@@ -198,8 +198,8 @@ function ChooseDeck({ decks, changeUserForm }: { decks: IDeck[], changeUserForm:
 
 function ChooseRoutine({changeUserForm}: {changeUserForm: (value: any) => void}){
     const [formData, setFormData] = useState({
-        new_cards_per_day: 10,
-        total_review_cards: 100
+        new_cards_limit: 10,
+        daily_limit: 100
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -218,7 +218,7 @@ function ChooseRoutine({changeUserForm}: {changeUserForm: (value: any) => void})
 
                     <div className="w-3/4 flex flex-col space-y-2">
                         <label className="text-sm font-medium text-gray-700">
-                            New cards per day: &nbsp; {formData.new_cards_per_day}
+                            New cards per day: &nbsp; {formData.new_cards_limit}
                         </label>
                         <input
                             type="range"
@@ -227,7 +227,7 @@ function ChooseRoutine({changeUserForm}: {changeUserForm: (value: any) => void})
                             name="new_cards_per_day"
                             className="w-full h-2 bg-yellow-200 rounded-lg appearance-none cursor-pointer accent-yellow-500"
                             onChange={handleChange}
-                            value={formData.new_cards_per_day}
+                            value={formData.daily_limit}
                         />
                         <div className="flex justify-between text-xs text-gray-500">
                             <span>3</span>
@@ -237,7 +237,7 @@ function ChooseRoutine({changeUserForm}: {changeUserForm: (value: any) => void})
 
                     <div className="w-3/4 flex flex-col space-y-2">
                         <label className="text-sm font-medium text-gray-700">
-                            Total Review Cards: &nbsp; {formData.total_review_cards}
+                            Total Review Cards: &nbsp; {formData.daily_limit}
                         </label>
                         <input
                             type="range"
@@ -246,7 +246,7 @@ function ChooseRoutine({changeUserForm}: {changeUserForm: (value: any) => void})
                             name="total_review_cards"
                             className="w-full h-2 bg-yellow-200 rounded-lg appearance-none cursor-pointer accent-yellow-500"
                             onChange={handleChange}
-                            value={formData.total_review_cards}
+                            value={formData.daily_limit}
                         />
 
                         <div className="flex justify-between text-xs text-gray-500">

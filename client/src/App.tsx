@@ -21,9 +21,9 @@ function App() {
         <AuthProvider>
           <NavbarRoleBased></NavbarRoleBased>
           <Routes>
-            <Route path= "/" element = {<WaitlistPage></WaitlistPage>}></Route>
-              <Route path="/cards" element={<HomePage />} />      {/* Home Route */}
-              <Route path="/cards2" element={<ProtectedRoute>  <CardPage2 /></ProtectedRoute>} />
+              <Route path= "/" element = {<WaitlistPage></WaitlistPage>}></Route>
+              <Route path="/cards2" element={<HomePage />} />      {/* Home Route */}
+              <Route path="/cards" element={<ProtectedRoute>  <CardPage2 /></ProtectedRoute>} />
               <Route path="/signup" element={<SignUpPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />

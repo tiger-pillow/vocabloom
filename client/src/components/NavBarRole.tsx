@@ -41,7 +41,7 @@ const NavbarRoleBased = () => {
                                 text="Home"
                             />
                             <NavLink
-                                path="/cards2"
+                                path="/cards"
                                 currentPath={currentPath}
                                 icon={<StudyIcon />}
                                 text="Study"
@@ -50,10 +50,10 @@ const NavbarRoleBased = () => {
                         {role === "admin" && (
                             <div className="flex space-x-1">
                                 <NavLink
-                                    path="/admin/cards"
+                                    path="/admin/addcard"
                                     currentPath={currentPath}
-                                    icon={<DeckIcon />}
-                                    text="Deck Management"
+                                    icon={<AddIcon />}
+                                    text="Add Card"
                                 />
 
                                 <NavLink
