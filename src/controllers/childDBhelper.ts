@@ -11,7 +11,7 @@ const FeedbackDict = [Rating.Hard, Rating.Good]
 // Create a child card for a user, with a mothercard id, find type by self 
 export async function createChildCard(user_id: Types.ObjectId|string, mothercard_id: Types.ObjectId | any) {
     let mothercard = await getMotherCardById(mothercard_id)
-    console.log("______createChildCard mothercard \n", mothercard)
+    console.log("______createChildCard() mothercard \n", mothercard)
     if (!mothercard) {
         throw new Error("Mothercard not found")
     }
@@ -23,10 +23,11 @@ export async function createChildCard(user_id: Types.ObjectId|string, mothercard
         word: mothercard.word,
         user_id: user_id,
         status: "active",
+        unseen: true,
         card: createEmptyCard(),
     })
     await newChildCard.save()
-    return true
+    return {newChildCard, mothercard}
 }
 
 export async function getChildCardsByUser(user_id: Types.ObjectId|string, status: string = "active"){

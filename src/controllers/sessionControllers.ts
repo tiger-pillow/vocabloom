@@ -27,6 +27,7 @@ export async function getNextDueCard(user_id: Types.ObjectId) {
 // the most complex logic
 export async function getSessionCard(req:any, res:any) {
     try{
+        let nextChildCard, nextMotherCard;
         console.log("______ getSessionCard req.user ______ \n", req.user)
 
         // find or create session log
@@ -61,7 +62,7 @@ export async function getSessionCard(req:any, res:any) {
 
             let random_mothercard_id
             
-            // Start a session
+            // Atomic Session
             const session = await mongoose.startSession();
             try {
                 session.startTransaction();
@@ -71,9 +72,17 @@ export async function getSessionCard(req:any, res:any) {
                 const unstudiedCards = mothercards.filter(card => 
                     !childdeck?.studied_mothercards.includes(card)  
                 );
+
+                if (unstudiedCards.length === 0) {
+                    throw new Error("No unstudied cards found in deck");
+                }
+
                 // Select random card from unstudied cards
                 random_mothercard_id = unstudiedCards[Math.floor(Math.random() * unstudiedCards.length)];
+                console.log("______ random_mothercard_id \n", random_mothercard_id)
+                console.log("unstudiedCards", unstudiedCards)
 
+                
                 // Add to studied cards
                 await ChildDeck.findByIdAndUpdate(
                     req.user.current_child_deck,
@@ -99,21 +108,27 @@ export async function getSessionCard(req:any, res:any) {
                 session.endSession();
             }
             
-            let newcard = await createChildCard(req.user._id, random_mothercard_id);
-            console.log("______ new card \n", newcard)
+            ({ newChildCard: nextChildCard, mothercard: nextMotherCard } = await createChildCard(req.user._id, random_mothercard_id));
+            console.log("______ new child card \n", nextChildCard, nextMotherCard)
             
-            if (!newcard) {
-                throw new Error("No unstudied cards found in deck");
+            if (!nextChildCard) {
+                throw new Error("child card not created");
             }
-            // let newChildCard = await createChildCard(req.user._id, random_mothercard_id);
-
+            
         }  else {
             // get next due card 
-            nextCard = await getNextDueCard(req.user._id)
+            nextChildCard = await getNextDueCard(req.user._id)
+            
+            if (!nextChildCard) {
+                throw new Error("No due cards found");
+            }
+            nextMotherCard = await getMotherCardById(nextChildCard.mothercard_id as Types.ObjectId)
         }
 
         res.status(200).json(
-            {nextCard: nextCard, 
+            {
+            childCard: nextChildCard, 
+            motherCard: nextMotherCard,
             sessionLog: sessionLog})
     
     } catch (error) {

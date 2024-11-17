@@ -25,6 +25,7 @@ export default function CardPage2() {
             childCard_id: id, 
             feedback: feedback
         })
+        console.log("onFeedback() response \n", response)
         setMotherCard(response.data)
         
     }
