@@ -1,17 +1,26 @@
 import mongoose, { SortOrder, Types } from "mongoose";
 import ChildCard from '../schemas/childCardSchema.js'
 import { createEmptyCard, Rating, Card, RatingType} from "ts-fsrs";
+import { getMotherCardById } from "./adminDBhelper.js";
 import {f} from "../index.js";
 
 const FeedbackDict = [Rating.Hard, Rating.Good]
 
 
 
-export async function createChildCard(user_id: Types.ObjectId|string, mothercard_id: Types.ObjectId|string, mothercard_type: string ) {
+// Create a child card for a user, with a mothercard id, find type by self 
+export async function createChildCard(user_id: Types.ObjectId|string, mothercard_id: Types.ObjectId | any) {
+    let mothercard = await getMotherCardById(mothercard_id)
+    console.log("______createChildCard mothercard \n", mothercard)
+    if (!mothercard) {
+        throw new Error("Mothercard not found")
+    }
+    let mothercard_type = mothercard.type
     // create child card for a user, mothercard 
     const newChildCard = new ChildCard({
         mothercard_id: mothercard_id,
         mothercard_type: mothercard_type, 
+        word: mothercard.word,
         user_id: user_id,
         status: "active",
         card: createEmptyCard(),

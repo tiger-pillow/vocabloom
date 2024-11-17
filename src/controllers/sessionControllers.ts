@@ -1,9 +1,9 @@
-import mongoose, {ObjectId, Types} from "mongoose";
+import mongoose, {mongo, ObjectId, Types} from "mongoose";
 import { createChildCard } from "./childDBhelper.js";
 import ChildCard from "../schemas/childCardSchema.js"
 import { getMotherCardByType, getMotherCardById} from "./adminDBhelper.js";
 import { getChildCardsByUser, updateOneChildCard } from "./childDBhelper.js"
-import { SessionLog } from "../schemas/deckSchema.js"
+import { SessionLog, Deck, ChildDeck } from "../schemas/deckSchema.js"
 import moment from "moment-timezone";
 
 
@@ -26,32 +26,109 @@ export async function getNextDueCard(user_id: Types.ObjectId) {
 
 // the most complex logic
 export async function getSessionCard(req:any, res:any) {
+    try{
+        console.log("______ getSessionCard req.user ______ \n", req.user)
 
-    let session_id; 
-    console.log("timezone offset: req body ", req.body.timezone_offset)
+        // find or create session log
+        let sessionLog;
+        if (req.body.session_id) {
+            sessionLog = await SessionLog.findById(req.body.session_id)
+        } else {
+            sessionLog = await findCreateSessionLog(req.user._id, req.body.timezone_offset)
+        }   
 
-    // save feedback, if there is any
-    if (req.body.feedback){
-        await updateOneChildCard(req.body.childCard_id, req.body.feedback)
-    }
+        if (!sessionLog) {
+            throw new Error("Session log not found")
+        }
 
-    // find/create session log
-    if (! req.body.feedback && !req.body.session_id) {
-       // try to find today's session log 
-        const sessionLog = await findCreateSessionLog(req.user._id, req.body.timezone_offset)
-       // if not found, create a new one
+        // user answer- update child card + add to session log
+        if (req.body.feedback) {
+            await updateOneChildCard(req.body.childCard_id, req.body.feedback)
+        }
+     
+        let nextCard;
+        // create a new child card 
+        console.log("______ new_card_count ", sessionLog.new_card_count,  " new_card_limit ", req.user.new_card_limit)
+        if (sessionLog.new_card_count < req.user.new_card_limit) {
 
-    }
+            const motherdeck = await Deck.findOne()
+                .where('_id')
+                .equals((await ChildDeck.findById(req.user.current_child_deck))?.motherdeck_id)
+                .select('mothercards')
+                .lean()
+            const mothercards = motherdeck?.mothercards || []
+            console.log("______ mother deck mother_cards", mothercards)
+
+            let random_mothercard_id
+            
+            // Start a session
+            const session = await mongoose.startSession();
+            try {
+                session.startTransaction();
+                const childdeck = await ChildDeck.findById(req.user.current_child_deck, null, {session})
+
+                // Get array of unstudied cards by filtering out studied ones
+                const unstudiedCards = mothercards.filter(card => 
+                    !childdeck?.studied_mothercards.includes(card)  
+                );
+                // Select random card from unstudied cards
+                random_mothercard_id = unstudiedCards[Math.floor(Math.random() * unstudiedCards.length)];
+
+                // Add to studied cards
+                await ChildDeck.findByIdAndUpdate(
+                    req.user.current_child_deck,
+                    { $push: { studied_mothercards: random_mothercard_id } },
+                    { session }
+                );
+
+                // update session log
+                await SessionLog.findByIdAndUpdate(
+                    sessionLog._id,
+                    { $inc: { new_card_count: 1, total_card_count: 1 } },
+                    { session }
+                );
+
+                // Commit the transaction
+                await session.commitTransaction();
+            } catch (error) {
+                // If error occurs, rollback changes
+                await session.abortTransaction();
+                throw error;
+            } finally {
+                // End session
+                session.endSession();
+            }
+            
+            let newcard = await createChildCard(req.user._id, random_mothercard_id);
+            console.log("______ new card \n", newcard)
+            
+            if (!newcard) {
+                throw new Error("No unstudied cards found in deck");
+            }
+            // let newChildCard = await createChildCard(req.user._id, random_mothercard_id);
+
+        }  else {
+            // get next due card 
+            nextCard = await getNextDueCard(req.user._id)
+        }
+
+        res.status(200).json(
+            {nextCard: nextCard, 
+            sessionLog: sessionLog})
     
-    // next card
+    } catch (error) {
+            console.log("!!!!!!!!!!!!!!______error \n", error)
+            res.status(500).json({error: error})
+        }
 
 }; 
+
+
+/// Find if the user has a session for that local day, if not create one
 const findCreateSessionLog = async (user_id: Types.ObjectId, timezone_offset: number) => {
         // Get utc, convert to local time, and then get start of day and end of day
         const startOfDay = moment().utc().add(timezone_offset, 'hours').startOf('day').toDate()
         const endOfDay = moment().utc().add(timezone_offset, 'hours').endOf('day').toDate()
-        
-        console.log("______start of day", startOfDay, "end of day", endOfDay)
         
         // Use findOneAndUpdate with upsert to atomically find or create
         const sessionLog = await SessionLog.findOneAndUpdate(
@@ -78,6 +155,5 @@ const findCreateSessionLog = async (user_id: Types.ObjectId, timezone_offset: nu
             }
         ).exec()
 
-        console.log("______session log", sessionLog)
         return sessionLog
 }

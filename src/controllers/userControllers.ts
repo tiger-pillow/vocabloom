@@ -1,5 +1,5 @@
 import EmailSchema from "../schemas/emailSchema.js";
-import { User, ChildDeckSchema, Deck } from "../schemas/deckSchema.js";
+import { User, ChildDeck, Deck } from "../schemas/deckSchema.js";
 import jwt from 'jsonwebtoken';
 
 export async function joinWaitlist(req: any, res: any){
@@ -40,25 +40,26 @@ export async function signUp(req: any, res: any) {
 
         // initiate a child deck
         const chosenDeck = await Deck.findById(req.body.deck_id)
-        const childDeck = {
-            deck_id: req.body.deck_id,
-            deck_name: chosenDeck?.deck_name || '',
+        const childDeck = await new ChildDeck({
+            motherdeck_id: req.body.deck_id,
+            motherdeck_name: chosenDeck?.deck_name || '',
             time_started: new Date(Date.now()),
             progress_index: 0,
-        }
+            current: true,
+            studied_mothercards: []
+        }).save()
 
         // create new user
-        const newUser = new User({
+        const newUser = await new User({
             username: req.body.username,
             email: req.body.email,
             password: req.body.password,
             daily_limit: req.body.daily_limit,
-            new_cards_limit: req.body.new_cards_limit,
-            current_deck: childDeck,
-            decks: []
-        })
+            new_card_limit: req.body.new_card_limit,
+            current_child_deck: childDeck._id,
+            child_decks: []
+        }).save()
 
-        await newUser.save()
         console.log("new user saved: ", newUser)
 
         // generate token

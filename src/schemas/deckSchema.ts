@@ -18,17 +18,18 @@ const SessionLogSchema = new mongoose.Schema({
     time_offset: {type: Number}, // timezone offset
     time_local: {type: Date}, // local time
 
-    new_card_count: {type: Number},
-    total_card_count: {type: Number},
+    new_card_count: {type: Number, default: 0},
+    total_card_count: {type: Number, default: 0},
     card_logs: {type: [String]}, 
 })
 
-export const ChildDeckSchema = ({
-    deck_id: {type: Types.ObjectId},
-    deck_name: {type: String},
+const ChildDeckSchema = new mongoose.Schema({
+    motherdeck_id: {type: Types.ObjectId},
+    motherdeck_name: {type: String},
     time_started: {type: Date},
     progress_index: {type: Number},
-    current: {type: Boolean}
+    current: {type: Boolean},
+    studied_mothercards: {type: [Types.ObjectId]}
 })
 
 const UserSchema = new mongoose.Schema({
@@ -39,10 +40,10 @@ const UserSchema = new mongoose.Schema({
     // payment_details: {type: String}, 
     // last_login_time: {type: Date, default: Date.now}
     daily_limit: { type: Number },
-    new_cards_limit: { type: Number },
+    new_card_limit: { type: Number },
     role: { type: String, default: "user", enum: ["user", "admin", "superadmin"] },
-    current_deck: {type: ChildDeckSchema},
-    decks: {type: [ChildDeckSchema]} // all decks the user has studied
+    current_child_deck: {type: Types.ObjectId},
+    child_decks: {type: [Types.ObjectId]} // all decks the user has studied
 })
 
 // Hash password before saving, never save plain password
@@ -79,3 +80,4 @@ interface UserDocument extends mongoose.Document {
 export const User = mongoose.model<UserDocument>("User", UserSchema);
 export const Deck = mongoose.model("Deck", DeckSchema)
 export const SessionLog = mongoose.model("SessionLog", SessionLogSchema)
+export const ChildDeck = mongoose.model("ChildDeck", ChildDeckSchema)

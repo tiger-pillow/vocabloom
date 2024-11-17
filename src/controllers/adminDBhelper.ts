@@ -52,21 +52,32 @@ export async function getMotherCardByType(type: string, status: string = "all", 
     
 }
 
-export async function getMotherCardById(id: Types.ObjectId, type: string){
+export async function getMotherCardById(id: Types.ObjectId, type?: string){
     try {
-        let data 
-        switch (type) {
-        case "noun": 
+        let data
+        if (!type) {
             data = await NounCard.findById(id).exec()
-            break
-        case "verb": 
-            data =  await VerbCard.findById(id).exec()
-            break
-        case "conjugate": 
-            data =  await ConjugateCard.findById(id).exec()
-            break
+            if (!data) {
+                data = await VerbCard.findById(id).exec()
+            }
+            if (!data) {
+                data = await ConjugateCard.findById(id).exec()
+            }
+        } else {
+            switch (type) {
+                case "noun":
+                    data = await NounCard.findById(id).exec()
+                    break
+                case "verb":
+                    data = await VerbCard.findById(id).exec()
+                    break
+                case "conjugate":
+                    data = await ConjugateCard.findById(id).exec()
+                    break
+            }
         }
         return data
+        
     } catch (error) {
         console.log("getMotherCardById() error ", error)
         return null

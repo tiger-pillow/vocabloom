@@ -11,7 +11,7 @@ const ChildCardSchema = new mongoose.Schema({
     user_id: { type: mongoose.Types.ObjectId, required: true}, 
     time_created: {type: Date, default: Date.now}, 
     status: {type: String}, // in case the user chooses to remove this card etc
-    
+    word: {type: String},
     // part of ts-fsrs schema 
     card: {
         due: { type: Date },

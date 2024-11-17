@@ -13,7 +13,7 @@ export default function SignUpPage(){
         password: '',
         confirmPassword: '',
         deck_id: '', 
-        new_cards_limit: 10,
+        new_card_limit: 10,
         daily_limit: 100
     });
     const navigate = useNavigate();
@@ -45,7 +45,7 @@ export default function SignUpPage(){
         try {
             let response = await signup(userForm)
             if (response) {
-                navigate('/cards2')
+                navigate('/cards')
             } else {
                 alert("signup error")
             }
@@ -198,7 +198,7 @@ function ChooseDeck({ decks, changeUserForm }: { decks: IDeck[], changeUserForm:
 
 function ChooseRoutine({changeUserForm}: {changeUserForm: (value: any) => void}){
     const [formData, setFormData] = useState({
-        new_cards_limit: 10,
+        new_card_limit: 10,
         daily_limit: 100
     });
 
@@ -218,13 +218,13 @@ function ChooseRoutine({changeUserForm}: {changeUserForm: (value: any) => void})
 
                     <div className="w-3/4 flex flex-col space-y-2">
                         <label className="text-sm font-medium text-gray-700">
-                            New cards per day: &nbsp; {formData.new_cards_limit}
+                            New cards per day: &nbsp; {formData.new_card_limit}
                         </label>
                         <input
                             type="range"
                             min="3"
                             max="50"
-                            name="new_cards_per_day"
+                            name="new_card_per_day"
                             className="w-full h-2 bg-yellow-200 rounded-lg appearance-none cursor-pointer accent-yellow-500"
                             onChange={handleChange}
                             value={formData.daily_limit}
