@@ -7,7 +7,6 @@ import { SessionLog, Deck, ChildDeck } from "../schemas/deckSchema.js"
 import moment from "moment-timezone";
 
 
-
 export async function getNextDueCard(user_id: Types.ObjectId) {
     try {
         // Find documents with the specific user_id
@@ -24,7 +23,11 @@ export async function getNextDueCard(user_id: Types.ObjectId) {
 }
 
 
-// the most complex logic
+// FIXME: when there are no more new cards
+// FIXME: count how many db reads are there
+// FIXME: the most key question, is should childDeck be its own thing, or part of the user? 
+// FIXME: when there are race condition, hence error, how should we return? 
+// FIXME: no need to randomly select card from unstudied cards, just get the first one
 export async function getSessionCard(req:any, res:any) {
     try{
         let nextChildCard, nextMotherCard;
@@ -48,7 +51,7 @@ export async function getSessionCard(req:any, res:any) {
         }
      
         let nextCard;
-        // create a new child card 
+        // not hitting new card limit
         console.log("______ new_card_count ", sessionLog.new_card_count,  " new_card_limit ", req.user.new_card_limit)
         if (sessionLog.new_card_count < req.user.new_card_limit) {
 
