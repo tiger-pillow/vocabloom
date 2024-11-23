@@ -24,6 +24,7 @@ const SessionLogSchema = new mongoose.Schema({
 })
 
 const ChildDeckSchema = new mongoose.Schema({
+    user_id: {type:String},
     motherdeck_id: {type: Types.ObjectId},
     motherdeck_name: {type: String},
     time_started: {type: Date},
@@ -42,9 +43,19 @@ const UserSchema = new mongoose.Schema({
     daily_limit: { type: Number },
     new_card_limit: { type: Number },
     role: { type: String, default: "user", enum: ["user", "admin", "superadmin"] },
-    current_child_deck: {type: Types.ObjectId},
-    child_decks: {type: [Types.ObjectId]} // all decks the user has studied
-})
+    current_deck: {
+        type: {
+            childdeck_id: Types.ObjectId,
+            motherdeck_id: Types.ObjectId
+        }
+    },
+    all_decks: [{
+        type: {
+            childdeck_id: Types.ObjectId,
+            motherdeck_id: Types.ObjectId
+        }
+    }]
+}) 
 
 // Hash password before saving, never save plain password
 UserSchema.pre("save", async function(next) {
@@ -69,10 +80,14 @@ interface UserDocument extends mongoose.Document {
     daily_limit: number;
     new_word_limit: number;
     role: string;
-    decks_studying: [{
-        deck_id: Types.ObjectId;
-        deck_name: string;
-    }]
+    all_decks: {
+        childdeck_id: Types.ObjectId;
+        motherdeck_id: Types.ObjectId;
+    }[];
+    current_deck: {
+        childdeck_id: Types.ObjectId;
+        motherdeck_id: Types.ObjectId;
+    };
 }
 
 

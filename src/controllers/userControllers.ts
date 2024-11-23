@@ -1,7 +1,7 @@
 import EmailSchema from "../schemas/emailSchema.js";
 import { User, ChildDeck, Deck } from "../schemas/deckSchema.js";
 import jwt from 'jsonwebtoken';
-
+import { Types } from "mongoose";
 export async function joinWaitlist(req: any, res: any){
     try{
         const newEmail = new EmailSchema({
@@ -40,25 +40,41 @@ export async function signUp(req: any, res: any) {
 
         // initiate a child deck
         const chosenDeck = await Deck.findById(req.body.deck_id)
+
+        // Create child deck without saving first
         const childDeck = await new ChildDeck({
+            user_id: null,
             motherdeck_id: req.body.deck_id,
             motherdeck_name: chosenDeck?.deck_name || '',
             time_started: new Date(Date.now()),
             progress_index: 0,
             current: true,
             studied_mothercards: []
-        }).save()
+        }).save();
 
-        // create new user
-        const newUser = await new User({
+        // Create new user
+        let newUser = await new User({
             username: req.body.username,
             email: req.body.email,
             password: req.body.password,
             daily_limit: req.body.daily_limit,
             new_card_limit: req.body.new_card_limit,
-            current_child_deck: childDeck._id,
-            child_decks: []
-        }).save()
+            current_deck: {
+                childdeck_id: childDeck._id,
+                motherdeck_id: req.body.deck_id
+            },
+            all_decks: [{
+                childdeck_id: childDeck._id,
+                motherdeck_id: req.body.deck_id
+            }]
+        }).save() as any
+
+        // Inject the user_id back to child deck
+        if (newUser) {
+            childDeck.user_id = newUser._id.toString();
+            await childDeck.save();
+        }
+     
 
         console.log("new user saved: ", newUser)
 

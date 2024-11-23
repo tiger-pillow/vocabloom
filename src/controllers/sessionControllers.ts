@@ -2,7 +2,7 @@ import mongoose, {mongo, ObjectId, Types} from "mongoose";
 import { createChildCard } from "./childDBhelper.js";
 import ChildCard from "../schemas/childCardSchema.js"
 import { getMotherCardByType, getMotherCardById} from "./adminDBhelper.js";
-import { getChildCardsByUser, updateOneChildCard } from "./childDBhelper.js"
+import { getChildCardsByUser, learnFeedback } from "./childDBhelper.js"
 import { SessionLog, Deck, ChildDeck } from "../schemas/deckSchema.js"
 import moment from "moment-timezone";
 
@@ -23,21 +23,19 @@ export async function getNextDueCard(user_id: Types.ObjectId) {
 }
 
 
-// FIXME: when there are no more new cards
-// FIXME: count how many db reads are there
-// FIXME: the most key question, is should childDeck be its own thing, or part of the user? 
-// FIXME: when there are race condition, hence error, how should we return? 
-// FIXME: no need to randomly select card from unstudied cards, just get the first one
+
 export async function getSessionCard(req:any, res:any) {
     try{
-        let nextChildCard, nextMotherCard;
-        console.log("______ getSessionCard req.user ______ \n", req.user)
+        console.log("______ getSessionCard() req.user ______ \n", req.user)
 
-        // find or create session log
+        
         let sessionLog;
+        // if session is ongoing, with id and feedback, then update 
         if (req.body.session_id) {
             sessionLog = await SessionLog.findById(req.body.sessionLog_id)
+            await learnFeedback(req.body.childCard_id, req.body.feedback, req.body.sessionLog_id)
         } else {
+            // find an interrupted session, or create a new one
             sessionLog = await findCreateSessionLog(req.user._id, req.body.timezone_offset)
         }   
 
@@ -45,26 +43,27 @@ export async function getSessionCard(req:any, res:any) {
             throw new Error("Session log not found")
         }
 
-        // user answer- update child card + add to session log
-        console.log("req.body ", req.body)
-        if (req.body.feedback) {
-            await updateOneChildCard(req.body.childCard_id, req.body.feedback)
+        //FIXME: need to fix this, return something meaningful 
+        if (sessionLog.total_card_count >= req.user.total_card_limit) {
+            throw new Error("Study limit reached")
         }
-     
-        let nextCard;
-        // not hitting new card limit
-        console.log("______ new_card_count ", sessionLog.new_card_count,  " new_card_limit ", req.user.new_card_limit)
+
+
+        let nextChildCard, nextMotherCard;
+
+
+        // get new card
+        // 1. give unseen childcards
+        // 2. if less than limit, give new card 
+        // 2.5 if no more new card, give a due card 
         if (sessionLog.new_card_count < req.user.new_card_limit) {
 
-            const motherdeck = await Deck.findOne()
-                .where('_id')
-                .equals((await ChildDeck.findById(req.user.current_child_deck))?.motherdeck_id)
-                .select('mothercards')
-                .lean()
+
+            const motherdeck = await Deck.findById(req.user.current_deck.motherdeck_id)
             const mothercards = motherdeck?.mothercards || []
             console.log("______ mother deck mother_cards", mothercards)
 
-            let random_mothercard_id
+            let new_mothercard_id
             
             // Atomic Session
             const session = await mongoose.startSession();
@@ -72,7 +71,7 @@ export async function getSessionCard(req:any, res:any) {
                 session.startTransaction();
                 const childdeck = await ChildDeck.findById(req.user.current_child_deck, null, {session})
 
-                // Get array of unstudied cards by filtering out studied ones
+                // Get an unstudied card from the motherdeck
                 const unstudiedCards = mothercards.filter(card => 
                     !childdeck?.studied_mothercards.includes(card)  
                 );
@@ -80,24 +79,14 @@ export async function getSessionCard(req:any, res:any) {
                 if (unstudiedCards.length === 0) {
                     throw new Error("No unstudied cards found in deck");
                 }
-
-                // Select random card from unstudied cards
-                random_mothercard_id = unstudiedCards[Math.floor(Math.random() * unstudiedCards.length)];
-                console.log("______ random_mothercard_id \n", random_mothercard_id)
+                new_mothercard_id = unstudiedCards[0];
+                console.log("______ new_mothercard_id \n", new_mothercard_id)
                 console.log("unstudiedCards", unstudiedCards)
 
-                
                 // Add to studied cards
                 await ChildDeck.findByIdAndUpdate(
                     req.user.current_child_deck,
-                    { $push: { studied_mothercards: random_mothercard_id } },
-                    { session }
-                );
-
-                // update session log
-                await SessionLog.findByIdAndUpdate(
-                    sessionLog._id,
-                    { $inc: { new_card_count: 1, total_card_count: 1 } },
+                    { $push: { studied_mothercards: new_mothercard_id } },
                     { session }
                 );
 
@@ -112,7 +101,7 @@ export async function getSessionCard(req:any, res:any) {
                 session.endSession();
             }
             
-            ({ newChildCard: nextChildCard, mothercard: nextMotherCard } = await createChildCard(req.user._id, random_mothercard_id));
+            ({ newChildCard: nextChildCard, mothercard: nextMotherCard } = await createChildCard(req.user._id, new_mothercard_id));
             console.log("_____ new child card \n", nextChildCard, nextMotherCard)
             
             if (!nextChildCard) {
@@ -127,10 +116,11 @@ export async function getSessionCard(req:any, res:any) {
                 throw new Error("No due cards found");
             }
             nextMotherCard = await getMotherCardById(nextChildCard.mothercard_id as Types.ObjectId)
-        }
+        } 
 
-        res.status(200).json(
-            {
+
+        
+        res.status(200).json({
             childCard: nextChildCard, 
             motherCard: nextMotherCard,
             sessionLog: sessionLog})

@@ -10,6 +10,7 @@ const SHORTCUT_DICT = {
     "Digit2": "Good",
     "Digit3": "Easy", 
     "Digit4": "Again", 
+    "Digit0": "Archive",
 }
 
 export default function CardPage2() {
@@ -110,20 +111,30 @@ function LearnCard({ card, onFeedback, onStatus }:
 
                         <div className="flex flex-wrap justify-center gap-4 mt-8">
                             <button className="bg-red-300 hover:bg-red-400 text-white font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
-                                onClick={() => { onFeedback("hard") }}>
+                                onClick={() => { onFeedback("Hard") }}>
                                 Hard
                             </button>
                             <button className="bg-yellow-200 hover:bg-yellow-300 text-gray-700 font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
-                                onClick={() => { onFeedback("good") }}>
+                                onClick={() => { onFeedback("Good") }}>
                                 Good
                             </button>
                             <button className="bg-green-200 hover:bg-green-300 text-gray-700 font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
-                                onClick={() => { onFeedback("easy") }}>
+                                onClick={() => { onFeedback("Easy") }}>
                                 Easy
                             </button>
                             <button className="bg-purple-200 hover:bg-purple-300 text-gray-700 font-bold py-2 px-6 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
-                                onClick={() => { onFeedback("again") }}>
+                                onClick={() => { onFeedback("Again") }}>
                                 Again
+                            </button>
+                        </div>
+
+
+                        <div className="flex justify-end mt-16">
+                            <button 
+                                className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+                                onClick={() => { onFeedback("Archive") }}
+                            >
+                                Archive
                             </button>
                         </div>
 

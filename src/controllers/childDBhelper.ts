@@ -3,7 +3,7 @@ import ChildCard from '../schemas/childCardSchema.js'
 import { createEmptyCard, Rating, Card, RatingType} from "ts-fsrs";
 import { getMotherCardById } from "./adminDBhelper.js";
 import {f} from "../index.js";
-
+import { SessionLog } from "../schemas/deckSchema.js";
 const FeedbackDict = [Rating.Hard, Rating.Good]
 
 
@@ -22,8 +22,7 @@ export async function createChildCard(user_id: Types.ObjectId|string, mothercard
         mothercard_type: mothercard_type, 
         word: mothercard.word,
         user_id: user_id,
-        status: "active",
-        unseen: true,
+        status: "unseen",
         card: createEmptyCard(),
     })
     await newChildCard.save()
@@ -39,34 +38,78 @@ export async function getChildCardsByUser(user_id: Types.ObjectId|string, status
     return data 
 }
 
-export async function updateOneChildCard(id: Types.ObjectId, feedback: string) {
+export async function learnFeedback(childCard_id: Types.ObjectId, feedback: string, sessionLog_id: Types.ObjectId) {
     try{
-        let childCard = await ChildCard.findById(id).exec()
-        if (childCard ){
-            console.log("updateOneChildCard() childCard \n", childCard)
-            
-            const scheduling_cards = f.repeat(childCard.card as Card, new Date())
-            let card 
-            switch (feedback){
-                case "Again": 
-                    card = scheduling_cards[Rating.Again].card
-                    break 
-                case "Hard": 
-                    card = scheduling_cards[Rating.Hard].card
-                    break
-                case "Good":
-                    card = scheduling_cards[Rating.Good].card
-                    break
-                case "Easy":
-                    card = scheduling_cards[Rating.Easy].card
-                    break
-            }
-            childCard.card = card
-            await childCard.save()
-            console.log("updated child card status, next due date is ", card?.due)
-        } else {
-            throw new Error("cannot find child card");
+        // find child card
+        let childCard = await ChildCard.findById(childCard_id).exec()
+        if (!childCard) {
+            throw new Error("Child card not found")
         }
+
+        // if archive
+        if (feedback === "Archive") {
+            childCard.status = "archived"
+            await childCard.save()
+            return
+        }
+       
+        // update fsrs card
+        const scheduling_cards = f.repeat(childCard.card as Card, new Date())
+        let fsrs_card, fsrs_log
+        switch (feedback){
+            case "Again": 
+                fsrs_card = scheduling_cards[Rating.Again].card
+                fsrs_log = scheduling_cards[Rating.Again].log
+                break 
+            case "Hard": 
+                fsrs_card = scheduling_cards[Rating.Hard].card
+                fsrs_log = scheduling_cards[Rating.Again].log
+
+                break
+            case "Good":
+                fsrs_card = scheduling_cards[Rating.Good].card
+                fsrs_log = scheduling_cards[Rating.Again].log
+                break
+            case "Easy":
+                fsrs_card = scheduling_cards[Rating.Easy].card
+                fsrs_log = scheduling_cards[Rating.Again].log
+                break
+        }
+
+        childCard.card = fsrs_card
+
+        // if the card is unseen, counts toward today's new card count
+        if (childCard.status === "unseen") {
+            childCard.status = "active"
+            await SessionLog.findByIdAndUpdate(sessionLog_id, {
+                $push: {
+                    logs: fsrs_log
+                },
+                $inc: {
+                    new_card_count: 1,
+                    total_card_count: 1,
+                }
+            })
+        } else {
+            await SessionLog.findByIdAndUpdate(sessionLog_id, {
+                $push: {
+                    logs: fsrs_log
+                }, 
+                $inc: {
+                    total_card_count: 1,
+                }
+            })
+        }
+
+        await childCard.save()
+
+        console.log("updated child card status, next due date is ", fsrs_card?.due)
+
+        // check if new log is pushed 
+        // check if the new card count and total card count are updated 
+        // check if unseen card status is updated 
+            
+        
     } catch (error) {
         console.log("updateOneChildCard error is ", error)
     }
