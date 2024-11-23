@@ -36,7 +36,7 @@ export async function getSessionCard(req:any, res:any) {
         // find or create session log
         let sessionLog;
         if (req.body.session_id) {
-            sessionLog = await SessionLog.findById(req.body.session_id)
+            sessionLog = await SessionLog.findById(req.body.sessionLog_id)
         } else {
             sessionLog = await findCreateSessionLog(req.user._id, req.body.timezone_offset)
         }   
@@ -46,6 +46,7 @@ export async function getSessionCard(req:any, res:any) {
         }
 
         // user answer- update child card + add to session log
+        console.log("req.body ", req.body)
         if (req.body.feedback) {
             await updateOneChildCard(req.body.childCard_id, req.body.feedback)
         }
@@ -112,7 +113,7 @@ export async function getSessionCard(req:any, res:any) {
             }
             
             ({ newChildCard: nextChildCard, mothercard: nextMotherCard } = await createChildCard(req.user._id, random_mothercard_id));
-            console.log("______ new child card \n", nextChildCard, nextMotherCard)
+            console.log("_____ new child card \n", nextChildCard, nextMotherCard)
             
             if (!nextChildCard) {
                 throw new Error("child card not created");

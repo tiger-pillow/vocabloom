@@ -43,7 +43,8 @@ export async function updateOneChildCard(id: Types.ObjectId, feedback: string) {
     try{
         let childCard = await ChildCard.findById(id).exec()
         if (childCard ){
-        
+            console.log("updateOneChildCard() childCard \n", childCard)
+            
             const scheduling_cards = f.repeat(childCard.card as Card, new Date())
             let card 
             switch (feedback){

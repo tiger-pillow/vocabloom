@@ -14,7 +14,8 @@ const SHORTCUT_DICT = {
 
 export default function CardPage2() {
     const [motherCard, setMotherCard] = useState<ICard>()
-    const [id, setID] = useState(String)
+    const [childCardId, setChildCardId] = useState(String)
+    const [sessionLogId, setSessionLogId] = useState(String)
     const timezone_offset = - new Date().getTimezoneOffset() / 60;
 
 
@@ -22,12 +23,14 @@ export default function CardPage2() {
         // send response to server, and get new card 
         console.log("onFeedback() ", feedback)
         const response = await axiosConfig.post("/getSessionCard", {
-            childCard_id: id, 
+            sessionLog_id: sessionLogId,
+            childCard_id: childCardId, 
             feedback: feedback
         })
         console.log("onFeedback() response \n", response)
-        setMotherCard(response.data)
-        
+        setMotherCard(response.data.motherCard as ICard)
+        setChildCardId(response.data.childCard._id)
+        setSessionLogId(response.data.sessionLog._id)
     }
 
     useEffect(()=>{
@@ -40,8 +43,9 @@ export default function CardPage2() {
                 });
 
                 setMotherCard(response.data.motherCard as ICard)
-                setID(response.data.childCard_id)
-                console.log("card is ", response.data)
+                setChildCardId(response.data.childCard._id)
+                setSessionLogId(response.data.sessionLog._id)
+                console.log("Initial response data is ", response.data)
             } catch (err) {
                 console.error(err);
             } 
@@ -51,6 +55,10 @@ export default function CardPage2() {
 
     return (
         <div >
+            <div>
+                DEBUG: 
+                <span>childcard id: {childCardId} </span>
+            </div>
             <div className="mx-auto p-6 max-w-4xl">
                 <ProgressBar totalCardCount={20} cardIndex={5} />
                 {
