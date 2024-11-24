@@ -13,7 +13,7 @@ export default function SignUpPage(){
         password: '',
         confirmPassword: '',
         deck_id: '', 
-        new_card_limit: 2,
+        new_card_limit: 4,
         daily_limit: 100
     });
     const navigate = useNavigate();
@@ -198,7 +198,7 @@ function ChooseDeck({ decks, changeUserForm }: { decks: IDeck[], changeUserForm:
 
 function ChooseRoutine({changeUserForm}: {changeUserForm: (value: any) => void}){
     const [formData, setFormData] = useState({
-        new_card_limit: 3,
+        new_card_limit: 4,
         daily_limit: 100
     });
 

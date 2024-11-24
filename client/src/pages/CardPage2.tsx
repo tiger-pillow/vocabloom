@@ -34,7 +34,7 @@ export default function CardPage2() {
         setMotherCard(response.data.motherCard as ICard)
         setChildCardId(response.data.childCard._id)
         setSessionLogId(response.data.sessionLog._id)
-    }, [childCardId, motherCard?.word, sessionLogId])
+    }, [motherCard?.word, childCardId, sessionLogId])
 
     useEffect(()=>{
         const fetchData = async() => {
@@ -92,7 +92,7 @@ function LearnCard({ card, onFeedback, onStatus }:
             return () => {
                 window.removeEventListener('keydown', handleKeyDown);
             };
-        }, [])
+        }, [onFeedback])
         
         return (
             <div className="m-2 mt-6">
