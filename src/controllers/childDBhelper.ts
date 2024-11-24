@@ -11,7 +11,6 @@ const FeedbackDict = [Rating.Hard, Rating.Good]
 // Create a child card for a user, with a mothercard id, find type by self 
 export async function createChildCard(user_id: Types.ObjectId|string, mothercard_id: Types.ObjectId | any) {
     let mothercard = await getMotherCardById(mothercard_id)
-    console.log("______createChildCard() mothercard \n", mothercard)
     if (!mothercard) {
         throw new Error("Mothercard not found")
     }
@@ -26,6 +25,8 @@ export async function createChildCard(user_id: Types.ObjectId|string, mothercard
         card: createEmptyCard(),
     })
     await newChildCard.save()
+    console.log("______createChildCard() mothercard \n", mothercard.word, "childcard_id", newChildCard._id)
+
     return {newChildCard, mothercard}
 }
 
@@ -40,6 +41,8 @@ export async function getChildCardsByUser(user_id: Types.ObjectId|string, status
 
 export async function learnFeedback(childCard_id: Types.ObjectId, feedback: string, sessionLog_id: Types.ObjectId) {
     try{
+        console.log("______ learnFeedback() feedback \n", feedback, "childCard_id", childCard_id, "sessionLog_id", sessionLog_id)
+
         // find child card
         let childCard = await ChildCard.findById(childCard_id).exec()
         if (!childCard) {
@@ -64,7 +67,6 @@ export async function learnFeedback(childCard_id: Types.ObjectId, feedback: stri
             case "Hard": 
                 fsrs_card = scheduling_cards[Rating.Hard].card
                 fsrs_log = scheduling_cards[Rating.Again].log
-
                 break
             case "Good":
                 fsrs_card = scheduling_cards[Rating.Good].card
@@ -103,7 +105,7 @@ export async function learnFeedback(childCard_id: Types.ObjectId, feedback: stri
 
         await childCard.save()
 
-        console.log("updated child card status, next due date is ", fsrs_card?.due)
+        console.log("learnFeedback _____ updated child card ", childCard)
 
         // check if new log is pushed 
         // check if the new card count and total card count are updated 

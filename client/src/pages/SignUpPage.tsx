@@ -198,7 +198,7 @@ function ChooseDeck({ decks, changeUserForm }: { decks: IDeck[], changeUserForm:
 
 function ChooseRoutine({changeUserForm}: {changeUserForm: (value: any) => void}){
     const [formData, setFormData] = useState({
-        new_card_limit: 2,
+        new_card_limit: 3,
         daily_limit: 100
     });
 

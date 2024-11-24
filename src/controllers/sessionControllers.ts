@@ -26,14 +26,15 @@ export async function getNextDueCard(user_id: Types.ObjectId) {
 
 export async function getSessionCard(req:any, res:any) {
     try{
-        console.log("______ getSessionCard() req.user ______ \n", req.user)
+        console.log("______ getSessionCard() req.body ______ \n", req.body)
 
         
         let sessionLog;
         // if session is ongoing, with id and feedback, then update 
-        if (req.body.session_id) {
-            sessionLog = await SessionLog.findById(req.body.sessionLog_id)
+        if (req.body.sessionLog_id) {
             await learnFeedback(req.body.childCard_id, req.body.feedback, req.body.sessionLog_id)
+            sessionLog = await SessionLog.findById(req.body.sessionLog_id)
+            console.log("______ feedback detected ______ \n", sessionLog?.new_card_count, sessionLog?.total_card_count)
         } else {
             // find an interrupted session, or create a new one
             sessionLog = await findCreateSessionLog(req.user._id, req.body.timezone_offset)
@@ -43,90 +44,120 @@ export async function getSessionCard(req:any, res:any) {
             throw new Error("Session log not found")
         }
 
-        //FIXME: need to fix this, return something meaningful 
         if (sessionLog.total_card_count >= req.user.total_card_limit) {
-            throw new Error("Study limit reached")
+            res.status(200).json({
+                message: "Session limit reached",
+                sessionLog: sessionLog
+            })
+            return
         }
 
+        //FIXME: here is the problem, after updating with feedback, still shows as "unseen‘"
 
         let nextChildCard, nextMotherCard;
-
-
-        // get new card
-        // 1. give unseen childcards
-        // 2. if less than limit, give new card 
-        // 2.5 if no more new card, give a due card 
+        console.log("______ sessionLog.new_card_count \n", sessionLog.new_card_count, req.user.new_card_limit)
         if (sessionLog.new_card_count < req.user.new_card_limit) {
 
+            // 1. Give unseen childcards
+            const unseenChildCard = await ChildCard.findOne({
+                user_id: req.user._id,
+                status: "unseen"
+            })
 
+            if (unseenChildCard) {
+                console.log("______ delivering unseenChildCards \n", unseenChildCard)
+                nextChildCard = unseenChildCard
+                nextMotherCard = await getMotherCardById(nextChildCard.mothercard_id as Types.ObjectId)
+                res.status(200).json({
+                    childCard: nextChildCard,
+                    motherCard: nextMotherCard,
+                    sessionLog: sessionLog
+                })
+                return
+            }
+
+            // 2. No unseen childcards, give a new card
+            // compare childdeck studied cards with motherdeck, choose new one and add to studied
+            let new_mothercard_id
             const motherdeck = await Deck.findById(req.user.current_deck.motherdeck_id)
             const mothercards = motherdeck?.mothercards || []
-            console.log("______ mother deck mother_cards", mothercards)
-
-            let new_mothercard_id
-            
-            // Atomic Session
             const session = await mongoose.startSession();
             try {
                 session.startTransaction();
-                const childdeck = await ChildDeck.findById(req.user.current_child_deck, null, {session})
+                
+                // Get motherdeck and childdeck atomically within transaction
+                const childdeck = await ChildDeck.findById(req.user.current_deck.childdeck_id, null, {session})
+
+
+                if (!childdeck) {
+                    throw new Error("Child deck not found");
+                }
 
                 // Get an unstudied card from the motherdeck
                 const unstudiedCards = mothercards.filter(card => 
-                    !childdeck?.studied_mothercards.includes(card)  
+                    !childdeck.studied_mothercards.includes(card)
                 );
 
                 if (unstudiedCards.length === 0) {
                     throw new Error("No unstudied cards found in deck");
                 }
-                new_mothercard_id = unstudiedCards[0];
-                console.log("______ new_mothercard_id \n", new_mothercard_id)
-                console.log("unstudiedCards", unstudiedCards)
 
-                // Add to studied cards
+                new_mothercard_id = unstudiedCards[0];
+                console.log("______ new_mothercard_id ", new_mothercard_id);
+
+                // Update studied cards atomically
                 await ChildDeck.findByIdAndUpdate(
-                    req.user.current_child_deck,
+                    childdeck._id,
                     { $push: { studied_mothercards: new_mothercard_id } },
                     { session }
                 );
 
-                // Commit the transaction
                 await session.commitTransaction();
             } catch (error) {
-                // If error occurs, rollback changes
                 await session.abortTransaction();
                 throw error;
             } finally {
-                // End session
-                session.endSession();
+                await session.endSession();
             }
+
             
             ({ newChildCard: nextChildCard, mothercard: nextMotherCard } = await createChildCard(req.user._id, new_mothercard_id));
-            console.log("_____ new child card \n", nextChildCard, nextMotherCard)
             
-            if (!nextChildCard) {
-                throw new Error("child card not created");
+            if (nextChildCard) {
+                console.log("_____ new child card created \n", nextChildCard.word, nextMotherCard.word)
+                res.status(200).json({
+                    childCard: nextChildCard,
+                    motherCard: nextMotherCard,
+                    sessionLog: sessionLog
+                })
+                return
             }
-            
-        }  else {
-            // get next due card 
-            nextChildCard = await getNextDueCard(req.user._id)
-            
-            if (!nextChildCard) {
-                throw new Error("No due cards found");
-            }
-            nextMotherCard = await getMotherCardById(nextChildCard.mothercard_id as Types.ObjectId)
         } 
 
+        if (nextChildCard) {
+            throw new Error("nextChildCard is already initiated but not sent , Shouldn't happen")
+        }
+
+        // get next due card 
+        nextChildCard = await getNextDueCard(req.user._id) as any
+        nextMotherCard = await getMotherCardById(nextChildCard.mothercard_id as Types.ObjectId)
 
         
+        if (!nextChildCard) {
+            res.status(200).json({
+                message: "No due cards found, session ended",
+                sessionLog: sessionLog
+            })
+            return 
+        }
+    
         res.status(200).json({
             childCard: nextChildCard, 
             motherCard: nextMotherCard,
             sessionLog: sessionLog})
     
     } catch (error) {
-            console.log("!!!!!!!!!!!!!!______error \n", error)
+        console.log("!!!!!!!!!!!!!! ERROR in getSessionCard() !!!!!!!!!!!!!! \n", error)
             res.status(500).json({error: error})
         }
 

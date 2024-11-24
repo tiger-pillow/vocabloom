@@ -20,7 +20,7 @@ const SessionLogSchema = new mongoose.Schema({
 
     new_card_count: {type: Number, default: 0},
     total_card_count: {type: Number, default: 0},
-    card_logs: {type: [String]}, 
+    logs: {type: [Object]}, 
 })
 
 const ChildDeckSchema = new mongoose.Schema({

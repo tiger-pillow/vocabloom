@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ICard } from "../interfaces/cardsInterface";
 import { CardComponent } from "../components/cards/CardComponents";
 import { ProgressBar } from "../components/cards/ProgressBar";
@@ -19,10 +19,12 @@ export default function CardPage2() {
     const [sessionLogId, setSessionLogId] = useState(String)
     const timezone_offset = - new Date().getTimezoneOffset() / 60;
 
+    // I think I know why, by passing in the childCardId, it is not updated, so it is still the previous childCardId
 
-    const onFeedback = async (feedback: string) => {
+
+    const onFeedback = useCallback(async (feedback: string) => {
         // send response to server, and get new card 
-        console.log("onFeedback() ", feedback)
+        console.log("onFeedback() ", motherCard?.word, feedback, "childCardId", childCardId)
         const response = await axiosConfig.post("/getSessionCard", {
             sessionLog_id: sessionLogId,
             childCard_id: childCardId, 
@@ -32,7 +34,7 @@ export default function CardPage2() {
         setMotherCard(response.data.motherCard as ICard)
         setChildCardId(response.data.childCard._id)
         setSessionLogId(response.data.sessionLog._id)
-    }
+    }, [childCardId, motherCard?.word, sessionLogId])
 
     useEffect(()=>{
         const fetchData = async() => {
