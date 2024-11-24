@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { ICard } from "../interfaces/cardsInterface";
-import { CardComponent } from "../components/cards/CardComponents";
 import { ProgressBar } from "../components/cards/ProgressBar";
 import axiosConfig from "../axiosConfig";
-import { time } from "console";
+import { useNavigate } from "react-router-dom";
 
 const SHORTCUT_DICT = {
     "Digit1": "Hard",
@@ -18,6 +17,7 @@ export default function CardPage2() {
     const [childCardId, setChildCardId] = useState(String)
     const [sessionLogId, setSessionLogId] = useState(String)
     const timezone_offset = - new Date().getTimezoneOffset() / 60;
+    const navigate = useNavigate()
 
     // I think I know why, by passing in the childCardId, it is not updated, so it is still the previous childCardId
 
@@ -31,9 +31,15 @@ export default function CardPage2() {
             feedback: feedback
         })
         console.log("onFeedback() response \n", response)
-        setMotherCard(response.data.motherCard as ICard)
-        setChildCardId(response.data.childCard._id)
-        setSessionLogId(response.data.sessionLog._id)
+        if (response.data.message === "Success") {
+            setMotherCard(response.data.motherCard as ICard)
+            setChildCardId(response.data.childCard._id)
+            setSessionLogId(response.data.sessionLog._id)
+        } else if (response.data.message === "Finished") {
+            alert(response.data.message)
+            console.log("Finished session, navigating to dashboard")
+            navigate("/dashboard")
+        }
     }, [motherCard?.word, childCardId, sessionLogId])
 
     useEffect(()=>{
@@ -44,11 +50,16 @@ export default function CardPage2() {
                 }, {
                     withCredentials: true,
                 });
-
-                setMotherCard(response.data.motherCard as ICard)
-                setChildCardId(response.data.childCard._id)
-                setSessionLogId(response.data.sessionLog._id)
-                console.log("Initial response data is ", response.data)
+                if (response.data.message === "Finished") {
+                    alert(response.data.message)
+                    console.log("Finished session, navigating to dashboard")
+                    navigate("/dashboard")
+                } else if (response.data.message === "Success") {
+                    setMotherCard(response.data.motherCard as ICard)
+                    setChildCardId(response.data.childCard._id)
+                    setSessionLogId(response.data.sessionLog._id)
+                    console.log("Initial response data is ", response.data)
+                }
             } catch (err) {
                 console.error(err);
             } 
@@ -62,11 +73,12 @@ export default function CardPage2() {
                 DEBUG: 
                 <span>childcard id: {childCardId} </span>
             </div>
+           
             <div className="mx-auto p-6 max-w-4xl">
                 <ProgressBar totalCardCount={20} cardIndex={5} />
                 {
                     motherCard === undefined ? <div></div> : 
-                        <LearnCard card={motherCard as ICard} onFeedback={onFeedback} />
+                        <LearnCard key={childCardId} card={motherCard as ICard} onFeedback={onFeedback} />
                 }
             </div>
             
@@ -89,10 +101,13 @@ function LearnCard({ card, onFeedback, onStatus }:
                 }
             };
             window.addEventListener('keydown', handleKeyDown);
+            setToggle(0)
+
             return () => {
                 window.removeEventListener('keydown', handleKeyDown);
             };
-        }, [onFeedback])
+        }, [onFeedback, card.word])
+
         
         return (
             <div className="m-2 mt-6">

@@ -3,15 +3,19 @@ import { createChildCard } from "./childDBhelper.js";
 import ChildCard from "../schemas/childCardSchema.js"
 import { getMotherCardByType, getMotherCardById} from "./adminDBhelper.js";
 import { getChildCardsByUser, learnFeedback } from "./childDBhelper.js"
-import { SessionLog, Deck, ChildDeck } from "../schemas/deckSchema.js"
+import { SessionLog, Deck, ChildDeck , User} from "../schemas/deckSchema.js"
 import moment from "moment-timezone";
 
-
-export async function getNextDueCard(user_id: Types.ObjectId) {
+export async function getNextDueCard(user_id: Types.ObjectId, offset: number = 1) {
     try {
+        // find local date from UTC
+        const localDate = moment().utc().add(offset, 'hours').toDate()
+        const endOfDay = moment(localDate).endOf('day').toDate()
+
         // Find documents with the specific user_id
         const documents = await ChildCard.find({ user_id: user_id })
             // Sort by card.due in ascending order to get the oldest first
+            .where("card.due").lte(endOfDay.getTime())
             .sort({ "card.due": 1 })
             .limit(1) // Get the oldest date only
             .exec();
@@ -22,19 +26,30 @@ export async function getNextDueCard(user_id: Types.ObjectId) {
     }
 }
 
+export async function debugRemove() {
+    try {
+        console.log("############### debugRemove() ###############")
+        await ChildCard.deleteMany({})
+        await SessionLog.deleteMany({})
+        await ChildDeck.deleteMany({})
+        await User.deleteMany({})
+      
+    } catch (error) {
+        console.error("Error removing debug data:", error)
+    }
+}
+
 
 
 export async function getSessionCard(req:any, res:any) {
     try{
-        console.log("______ getSessionCard() req.body ______ \n", req.body)
-
+        console.log("getSessionCard() user request \n", req.body)
         
         let sessionLog;
         // if session is ongoing, with id and feedback, then update 
         if (req.body.sessionLog_id) {
             await learnFeedback(req.body.childCard_id, req.body.feedback, req.body.sessionLog_id)
             sessionLog = await SessionLog.findById(req.body.sessionLog_id)
-            console.log("______ feedback detected ______ \n", sessionLog?.new_card_count, sessionLog?.total_card_count)
         } else {
             // find an interrupted session, or create a new one
             sessionLog = await findCreateSessionLog(req.user._id, req.body.timezone_offset)
@@ -44,18 +59,18 @@ export async function getSessionCard(req:any, res:any) {
             throw new Error("Session log not found")
         }
 
-        if (sessionLog.total_card_count >= req.user.total_card_limit) {
+        // reaching daily study limit
+        if (sessionLog.total_card_count >= req.user.daily_limit) {
+            console.log("Reached daily study limit, finished session")
             res.status(200).json({
-                message: "Session limit reached",
+                message: "Finished",
                 sessionLog: sessionLog
             })
             return
         }
 
-        //FIXME: here is the problem, after updating with feedback, still shows as "unseen‘"
 
         let nextChildCard, nextMotherCard;
-        console.log("______ sessionLog.new_card_count \n", sessionLog.new_card_count, req.user.new_card_limit)
         if (sessionLog.new_card_count < req.user.new_card_limit) {
 
             // 1. Give unseen childcards
@@ -65,10 +80,10 @@ export async function getSessionCard(req:any, res:any) {
             })
 
             if (unseenChildCard) {
-                console.log("______ delivering unseenChildCards \n", unseenChildCard)
                 nextChildCard = unseenChildCard
                 nextMotherCard = await getMotherCardById(nextChildCard.mothercard_id as Types.ObjectId)
                 res.status(200).json({
+                    message: "Success",
                     childCard: nextChildCard,
                     motherCard: nextMotherCard,
                     sessionLog: sessionLog
@@ -101,9 +116,7 @@ export async function getSessionCard(req:any, res:any) {
                 if (unstudiedCards.length === 0) {
                     throw new Error("No unstudied cards found in deck");
                 }
-
                 new_mothercard_id = unstudiedCards[0];
-                console.log("______ new_mothercard_id ", new_mothercard_id);
 
                 // Update studied cards atomically
                 await ChildDeck.findByIdAndUpdate(
@@ -124,8 +137,8 @@ export async function getSessionCard(req:any, res:any) {
             ({ newChildCard: nextChildCard, mothercard: nextMotherCard } = await createChildCard(req.user._id, new_mothercard_id));
             
             if (nextChildCard) {
-                console.log("_____ new child card created \n", nextChildCard.word, nextMotherCard.word)
                 res.status(200).json({
+                    message: "Success",
                     childCard: nextChildCard,
                     motherCard: nextMotherCard,
                     sessionLog: sessionLog
@@ -135,30 +148,30 @@ export async function getSessionCard(req:any, res:any) {
         } 
 
         if (nextChildCard) {
-            throw new Error("nextChildCard is already initiated but not sent , Shouldn't happen")
+            throw new Error("nextChildCard is already initiated but not sent, shouldn't happen")
         }
 
         // get next due card 
         nextChildCard = await getNextDueCard(req.user._id) as any
-        nextMotherCard = await getMotherCardById(nextChildCard.mothercard_id as Types.ObjectId)
-
-        
-        if (!nextChildCard) {
+        if (!nextChildCard) { // no more cards due 
             res.status(200).json({
-                message: "No due cards found, session ended",
+                message: "Finished",
                 sessionLog: sessionLog
             })
             return 
         }
-    
+
+        nextMotherCard = await getMotherCardById(nextChildCard.mothercard_id as Types.ObjectId)
         res.status(200).json({
+            message: "Success", 
             childCard: nextChildCard, 
             motherCard: nextMotherCard,
             sessionLog: sessionLog})
     
     } catch (error) {
         console.log("!!!!!!!!!!!!!! ERROR in getSessionCard() !!!!!!!!!!!!!! \n", error)
-            res.status(500).json({error: error})
+            res.status(500).json({message: "Failed", 
+                error: error})
         }
 
 }; 

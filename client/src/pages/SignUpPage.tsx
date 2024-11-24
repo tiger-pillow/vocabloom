@@ -14,7 +14,7 @@ export default function SignUpPage(){
         confirmPassword: '',
         deck_id: '', 
         new_card_limit: 4,
-        daily_limit: 100
+        daily_limit: 10
     });
     const navigate = useNavigate();
     useEffect(() => {
@@ -199,7 +199,7 @@ function ChooseDeck({ decks, changeUserForm }: { decks: IDeck[], changeUserForm:
 function ChooseRoutine({changeUserForm}: {changeUserForm: (value: any) => void}){
     const [formData, setFormData] = useState({
         new_card_limit: 4,
-        daily_limit: 100
+        daily_limit: 10
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

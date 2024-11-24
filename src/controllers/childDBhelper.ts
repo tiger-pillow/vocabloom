@@ -85,7 +85,11 @@ export async function learnFeedback(childCard_id: Types.ObjectId, feedback: stri
             childCard.status = "active"
             await SessionLog.findByIdAndUpdate(sessionLog_id, {
                 $push: {
-                    logs: fsrs_log
+                    logs: 
+                    {
+                        childCard_id: childCard_id,
+                        fsrs_log: fsrs_log
+                    }
                 },
                 $inc: {
                     new_card_count: 1,
@@ -95,7 +99,10 @@ export async function learnFeedback(childCard_id: Types.ObjectId, feedback: stri
         } else {
             await SessionLog.findByIdAndUpdate(sessionLog_id, {
                 $push: {
-                    logs: fsrs_log
+                    logs: {   
+                        childCard_id: childCard_id,
+                        fsrs_log: fsrs_log
+                    }
                 }, 
                 $inc: {
                     total_card_count: 1,
@@ -105,14 +112,8 @@ export async function learnFeedback(childCard_id: Types.ObjectId, feedback: stri
 
         await childCard.save()
 
-        console.log("learnFeedback _____ updated child card ", childCard)
-
-        // check if new log is pushed 
-        // check if the new card count and total card count are updated 
-        // check if unseen card status is updated 
-            
         
     } catch (error) {
-        console.log("updateOneChildCard error is ", error)
+        console.log("learnFeedback error is ", error)
     }
 }

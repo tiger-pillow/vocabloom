@@ -8,6 +8,7 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import { generatorParameters, fsrs } from 'ts-fsrs';
 import cookieParser from 'cookie-parser';
+import { debugRemove } from './controllers/sessionControllers.js';
 
 dotenv.config();
 const app = express();
@@ -70,5 +71,8 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-const params = generatorParameters({ enable_fuzz: true, enable_short_term: false });
+// debugRemove()
+
+
+const params = generatorParameters({ enable_fuzz: true, enable_short_term: true });
 export const f = fsrs(params)

@@ -66,7 +66,8 @@ export async function signUp(req: any, res: any) {
             all_decks: [{
                 childdeck_id: childDeck._id,
                 motherdeck_id: req.body.deck_id
-            }]
+            }], 
+            role: "admin"
         }).save() as any
 
         // Inject the user_id back to child deck
