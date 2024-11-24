@@ -69,7 +69,7 @@ export default function CardPage(){
                             <div className="text-4xl text-center">You have finished all the words!</div>
                             :
                             <div className="w-2/3 m-auto">
-                                <ProgressBar totalCardCount={20} cardIndex={5}/>
+                                <ProgressBar daily_limit={20} current_count={5}/>
                                 
                                 {currStatus === "success" ? <div> ✅ Correct </div> : <div> </div>}
                                 

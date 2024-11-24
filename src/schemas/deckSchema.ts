@@ -17,7 +17,7 @@ const SessionLogSchema = new mongoose.Schema({
     time_created: {type: Date, default: Date.now}, // utc
     time_offset: {type: Number}, // timezone offset
     time_local: {type: Date}, // local time
-
+    daily_limit: {type: Number}, // inherit from user upon creation
     new_card_count: {type: Number, default: 0},
     total_card_count: {type: Number, default: 0},
     logs: {type: [Object]}, 

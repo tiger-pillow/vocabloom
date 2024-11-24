@@ -15,7 +15,7 @@ const SHORTCUT_DICT = {
 export default function CardPage2() {
     const [motherCard, setMotherCard] = useState<ICard>()
     const [childCardId, setChildCardId] = useState(String)
-    const [sessionLogId, setSessionLogId] = useState(String)
+    const [sessionLog, setSessionLog] = useState(Object)
     const timezone_offset = - new Date().getTimezoneOffset() / 60;
     const navigate = useNavigate()
 
@@ -26,7 +26,7 @@ export default function CardPage2() {
         // send response to server, and get new card 
         console.log("onFeedback() ", motherCard?.word, feedback, "childCardId", childCardId)
         const response = await axiosConfig.post("/getSessionCard", {
-            sessionLog_id: sessionLogId,
+            sessionLog_id: sessionLog._id,
             childCard_id: childCardId, 
             feedback: feedback
         })
@@ -34,13 +34,13 @@ export default function CardPage2() {
         if (response.data.message === "Success") {
             setMotherCard(response.data.motherCard as ICard)
             setChildCardId(response.data.childCard._id)
-            setSessionLogId(response.data.sessionLog._id)
+            setSessionLog(response.data.sessionLog)
         } else if (response.data.message === "Finished") {
             alert(response.data.message)
             console.log("Finished session, navigating to dashboard")
             navigate("/dashboard")
         }
-    }, [motherCard?.word, childCardId, sessionLogId])
+    }, [motherCard?.word, childCardId, sessionLog])
 
     useEffect(()=>{
         const fetchData = async() => {
@@ -57,7 +57,7 @@ export default function CardPage2() {
                 } else if (response.data.message === "Success") {
                     setMotherCard(response.data.motherCard as ICard)
                     setChildCardId(response.data.childCard._id)
-                    setSessionLogId(response.data.sessionLog._id)
+                    setSessionLog(response.data.sessionLog)
                     console.log("Initial response data is ", response.data)
                 }
             } catch (err) {
@@ -75,7 +75,7 @@ export default function CardPage2() {
             </div>
            
             <div className="mx-auto p-6 max-w-4xl">
-                <ProgressBar totalCardCount={20} cardIndex={5} />
+                <ProgressBar daily_limit={sessionLog.daily_limit} current_count={sessionLog.total_card_count} />
                 {
                     motherCard === undefined ? <div></div> : 
                         <LearnCard key={childCardId} card={motherCard as ICard} onFeedback={onFeedback} />

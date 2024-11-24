@@ -43,7 +43,7 @@ export async function debugRemove() {
 
 export async function getSessionCard(req:any, res:any) {
     try{
-        console.log("getSessionCard() user request \n", req.body)
+        console.log("getSessionCard() user request \n", req.body, req.user)
         
         let sessionLog;
         // if session is ongoing, with id and feedback, then update 
@@ -52,7 +52,7 @@ export async function getSessionCard(req:any, res:any) {
             sessionLog = await SessionLog.findById(req.body.sessionLog_id)
         } else {
             // find an interrupted session, or create a new one
-            sessionLog = await findCreateSessionLog(req.user._id, req.body.timezone_offset)
+            sessionLog = await findCreateSessionLog(req.user._id, req.body.timezone_offset, req.user.daily_limit)
         }   
 
         if (!sessionLog) {
@@ -178,11 +178,11 @@ export async function getSessionCard(req:any, res:any) {
 
 
 /// Find if the user has a session for that local day, if not create one
-const findCreateSessionLog = async (user_id: Types.ObjectId, timezone_offset: number) => {
+const findCreateSessionLog = async (user_id: Types.ObjectId, timezone_offset: number, daily_limit: number) => {
         // Get utc, convert to local time, and then get start of day and end of day
         const startOfDay = moment().utc().add(timezone_offset, 'hours').startOf('day').toDate()
         const endOfDay = moment().utc().add(timezone_offset, 'hours').endOf('day').toDate()
-        
+ 
         // Use findOneAndUpdate with upsert to atomically find or create
         const sessionLog = await SessionLog.findOneAndUpdate(
             {
@@ -199,6 +199,7 @@ const findCreateSessionLog = async (user_id: Types.ObjectId, timezone_offset: nu
                     time_local: moment().utc().add(timezone_offset, 'hours').toDate(),
                     new_card_count: 0,
                     total_card_count: 0,
+                    daily_limit: daily_limit,
                     card_logs: []
                 }
             },

@@ -30,33 +30,7 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                {/* Friends Section */}
-                <div className="bg-white rounded-lg shadow p-6">
-                    <h2 className="text-2xl font-bold mb-4">Friends</h2>
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                            <div className="flex items-center">
-                                <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-                                <div className="ml-4">
-                                    <p className="font-semibold">Sarah Chen</p>
-                                    <p className="text-sm text-gray-600">12 day streak</p>
-                                </div>
-                            </div>
-                            <span className="text-green-500">Online</span>
-                        </div>
-
-                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                            <div className="flex items-center">
-                                <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-                                <div className="ml-4">
-                                    <p className="font-semibold">Mike Johnson</p>
-                                    <p className="text-sm text-gray-600">5 day streak</p>
-                                </div>
-                            </div>
-                            <span className="text-gray-500">Offline</span>
-                        </div>
-                    </div>
-                </div>
+               
             </div>
 
         </div>
