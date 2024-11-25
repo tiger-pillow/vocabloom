@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { ICard } from "../interfaces/cardsInterface";
 import { ProgressBar } from "../components/cards/ProgressBar";
 import axiosConfig from "../axiosConfig";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const SHORTCUT_DICT = {
@@ -18,6 +19,8 @@ export default function CardPage2() {
     const [sessionLog, setSessionLog] = useState(Object)
     const timezone_offset = - new Date().getTimezoneOffset() / 60;
     const navigate = useNavigate()
+    const { username } = useAuth()
+    const [pageState, setPageState] = useState("loading")
 
     // I think I know why, by passing in the childCardId, it is not updated, so it is still the previous childCardId
 
@@ -36,13 +39,14 @@ export default function CardPage2() {
             setChildCardId(response.data.childCard._id)
             setSessionLog(response.data.sessionLog)
         } else if (response.data.message === "Finished") {
-            alert(response.data.message)
-            console.log("Finished session, navigating to dashboard")
+            setSessionLog(response.data.sessionLog)
+            console.log("Finished session, navigating to dashboard", response.data.sessionLog)
             navigate("/dashboard")
         }
     }, [motherCard?.word, childCardId, sessionLog])
 
     useEffect(()=>{
+
         const fetchData = async() => {
             try {
                 const response = await axiosConfig.post("/getSessionCard",{
@@ -50,10 +54,10 @@ export default function CardPage2() {
                 }, {
                     withCredentials: true,
                 });
+                setPageState(response.data.message)
                 if (response.data.message === "Finished") {
-                    alert(response.data.message)
+                    setSessionLog(response.data.sessionLog)
                     console.log("Finished session, navigating to dashboard")
-                    navigate("/dashboard")
                 } else if (response.data.message === "Success") {
                     setMotherCard(response.data.motherCard as ICard)
                     setChildCardId(response.data.childCard._id)
@@ -69,22 +73,47 @@ export default function CardPage2() {
 
     return (
         <div >
-            <div>
-                DEBUG: 
-                <span>childcard id: {childCardId} </span>
-            </div>
            
             <div className="mx-auto p-6 max-w-4xl">
-                <ProgressBar daily_limit={sessionLog.daily_limit} current_count={sessionLog.total_card_count} />
                 {
-                    motherCard === undefined ? <div></div> : 
+                    pageState === "Success" ? 
+                    <div>
+                        <ProgressBar daily_limit={sessionLog.daily_limit} current_count={sessionLog.total_card_count} />
                         <LearnCard key={childCardId} card={motherCard as ICard} onFeedback={onFeedback} />
+                    </div> : pageState === "Finished" ? 
+                    <FinishSession sessionLog={sessionLog} username={username}/> : <div>Loading...</div>
                 }
+                
             </div>
             
         </div>
     )
 }
+
+function FinishSession({sessionLog, username}: {sessionLog: any, username: string | null}){
+    console.log("Finished Session component")
+    return (
+        <div className="text-center p-6">
+            <h1 className="text-3xl font-bold mb-4">Amazing <span className="text-orange-600">{username}</span>, Great Job!</h1>
+            <p className="text-lg mb-4">You have completed your session for today. Here are some key statistics:</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-white rounded-lg shadow p-6">
+                    <h2 className="text-xl font-semibold mb-2">Total Cards Studied</h2>
+                    <p className="text-4xl font-bold text-blue-600">{sessionLog.total_card_count}</p>
+                </div>
+                <div className="bg-white rounded-lg shadow p-6">
+                    <h2 className="text-xl font-semibold mb-2">New Cards Learned</h2>
+                    <p className="text-4xl font-bold text-green-600">{sessionLog.new_card_count}</p>
+                </div>
+            </div>
+            <p className="text-lg">We will be waiting for you tomorrow!</p>
+        </div>
+    )
+
+}
+
+
+
 
 function LearnCard({ card, onFeedback, onStatus }: 
         { card: ICard, onFeedback: (feedback: string) => Promise<void>, onStatus?: () => Promise<void> | null}) {

@@ -43,7 +43,7 @@ export async function debugRemove() {
 
 export async function getSessionCard(req:any, res:any) {
     try{
-        console.log("getSessionCard() user request \n", req.body, req.user)
+        console.log("getSessionCard()")
         
         let sessionLog;
         // if session is ongoing, with id and feedback, then update 
@@ -113,18 +113,27 @@ export async function getSessionCard(req:any, res:any) {
                     !childdeck.studied_mothercards.includes(card)
                 );
 
-                if (unstudiedCards.length === 0) {
-                    throw new Error("No unstudied cards found in deck");
+                // There are still unstudied cards, choose one
+                if (unstudiedCards.length !== 0) {
+                    new_mothercard_id = unstudiedCards[0];
+                    await ChildDeck.findByIdAndUpdate(
+                        childdeck._id,
+                        { $push: { studied_mothercards: new_mothercard_id } },
+                        { session }
+                    );
+
+                    ({ newChildCard: nextChildCard, mothercard: nextMotherCard } = await createChildCard(req.user._id, new_mothercard_id));
+                    if (nextChildCard) {
+                        res.status(200).json({
+                            message: "Success",
+                            childCard: nextChildCard,
+                            motherCard: nextMotherCard,
+                            sessionLog: sessionLog
+                        })
+                        return
+                    }
                 }
-                new_mothercard_id = unstudiedCards[0];
-
-                // Update studied cards atomically
-                await ChildDeck.findByIdAndUpdate(
-                    childdeck._id,
-                    { $push: { studied_mothercards: new_mothercard_id } },
-                    { session }
-                );
-
+                
                 await session.commitTransaction();
             } catch (error) {
                 await session.abortTransaction();
@@ -133,18 +142,6 @@ export async function getSessionCard(req:any, res:any) {
                 await session.endSession();
             }
 
-            
-            ({ newChildCard: nextChildCard, mothercard: nextMotherCard } = await createChildCard(req.user._id, new_mothercard_id));
-            
-            if (nextChildCard) {
-                res.status(200).json({
-                    message: "Success",
-                    childCard: nextChildCard,
-                    motherCard: nextMotherCard,
-                    sessionLog: sessionLog
-                })
-                return
-            }
         } 
 
         if (nextChildCard) {
